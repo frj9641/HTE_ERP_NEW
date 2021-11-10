@@ -140,7 +140,7 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 			//update-begin--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
 			JSONObject formData = new JSONObject();
 			formData.put("parentId",parentId);
-			String[] codeArray = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART,formData);
+			String[] codeArray = (String[]) FillRuleUtil.executeRule(FillRuleConstant.DEPART_NEW,formData);
 			//update-end--Author:baihailong  Date:20191209 for：部门编码规则生成器做成公用配置
 			sysDepart.setOrgCode(codeArray[0]);
 			String orgType = codeArray[1];
