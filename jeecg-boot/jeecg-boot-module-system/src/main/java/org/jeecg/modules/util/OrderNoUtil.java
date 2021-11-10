@@ -16,7 +16,7 @@ public class OrderNoUtil {
     public String getOrderNo(String prefix, String id) {
         String key = prefix + ":" + id + ":" + simpleDateFormat.format(new Date());
         Object o = redisUtil.get(key);
-        String result = prefix + id + simpleDateFormat.format(new Date());
+        String result = prefix + castNumToStr(Integer.parseInt(id)) + simpleDateFormat.format(new Date());
         if (o == null || o.equals("")) {
             redisUtil.set(key, 1, 60 * 60 * 24);
             result += castNumToStr(1);

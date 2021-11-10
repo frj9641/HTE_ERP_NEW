@@ -150,6 +150,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
+     * 获取出库单据号
      * @param id
      * @return
      */
@@ -160,6 +161,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
+     * 获取入库单据号
      * @param id
      * @return
      */
@@ -170,6 +172,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
+     * 获取出库单据号
      * @param id
      * @return
      */
@@ -180,12 +183,24 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
+     * 获取调增单据号
      * @param id
      * @return
      */
     @GetMapping(value = "/getTzNo")
     public Result<?> getTzNo(@RequestParam(name = "id", required = true) String id) {
         String orderNo = orderNoUtil.getOrderNo("TZ", id);
+        return Result.OK(orderNo);
+    }
+
+    /**
+     * 获取产品单据号
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/getCpNo")
+    public Result<?> getCpNo(@RequestParam(name = "id", required = true) String id) {
+        String orderNo = orderNoUtil.getOrderNo("CP", id);
         return Result.OK(orderNo);
     }
 
