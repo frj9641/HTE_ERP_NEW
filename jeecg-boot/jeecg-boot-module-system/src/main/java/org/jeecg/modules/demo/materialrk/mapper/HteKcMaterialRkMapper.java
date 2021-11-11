@@ -14,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface HteKcMaterialRkMapper extends BaseMapper<HteKcMaterialRk> {
 
+    void updateKc(String id, String kcSlT);
 }

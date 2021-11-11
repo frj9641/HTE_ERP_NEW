@@ -11,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IHteKcMaterialRkService extends IService<HteKcMaterialRk> {
 
+    void updateKc(String id, String kcSlT);
 }

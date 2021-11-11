@@ -178,7 +178,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
      */
     @GetMapping(value = "/getCkNo")
     public Result<?> getCkNo(@RequestParam(name = "id", required = true) String id) {
-        String orderNo = orderNoUtil.getOrderNo("CG", id);
+        String orderNo = orderNoUtil.getOrderNo("CK", id);
         return Result.OK(orderNo);
     }
 
