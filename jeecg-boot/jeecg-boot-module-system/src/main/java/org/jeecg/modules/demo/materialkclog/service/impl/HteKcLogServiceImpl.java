@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 /**
  * @Description: 入库单库存历史日志
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date: 2021-11-11
  * @Version: V1.0
  */
 @Service

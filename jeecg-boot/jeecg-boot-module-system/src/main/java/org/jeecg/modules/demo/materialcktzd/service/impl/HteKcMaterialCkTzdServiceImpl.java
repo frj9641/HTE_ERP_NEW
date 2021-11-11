@@ -10,14 +10,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 /**
  * @Description: 出库_调整单表
  * @Author: jeecg-boot
- * @Date:   2021-11-11
+ * @Date: 2021-11-11
  * @Version: V1.0
  */
 @Service
 public class HteKcMaterialCkTzdServiceImpl extends ServiceImpl<HteKcMaterialCkTzdMapper, HteKcMaterialCkTzd> implements IHteKcMaterialCkTzdService {
 
-    public void check(String id) {
-        baseMapper.updateCheckFlag(id, "2");
-        System.out.println("审核功能---------id = " + id);
-    }
 }

@@ -10,14 +10,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 /**
  * @Description: 入库业务表
  * @Author: jeecg-boot
- * @Date:   2021-11-10
+ * @Date: 2021-11-10
  * @Version: V1.0
  */
 @Service
 public class HteKcMaterialRkServiceImpl extends ServiceImpl<HteKcMaterialRkMapper, HteKcMaterialRk> implements IHteKcMaterialRkService {
-
-    public void updateKc(String id, String kcSlT){
-        baseMapper.updateKc(id, kcSlT);
-    }
 
 }
