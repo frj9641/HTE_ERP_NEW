@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @Description: 入库业务表
@@ -159,6 +160,14 @@ public class HteKcMaterialRkController extends JeecgController<HteKcMaterialRk, 
         HteKcMaterialRk hteKcMaterialRk = hteKcMaterialRkService.getById(id);
         hteKcMaterialRk.setKcSlT(Double.parseDouble(kcSlT));
         hteKcMaterialRkService.updateById(hteKcMaterialRk);
-        return Result.OK("审核成功！");
+        return Result.OK("库存修改成功！");
+    }
+
+    @AutoLog(value = "入库单-审核")
+    @ApiOperation(value = "入库单-审核", notes = "入库单-审核")
+    @GetMapping(value = "/checkRk")
+    public Result<?> checkRk(@RequestParam(name = "id", required = true) String id) {
+        hteKcMaterialRkService.checkRK(id);
+        return Result.OK("库存修改成功！");
     }
 }
