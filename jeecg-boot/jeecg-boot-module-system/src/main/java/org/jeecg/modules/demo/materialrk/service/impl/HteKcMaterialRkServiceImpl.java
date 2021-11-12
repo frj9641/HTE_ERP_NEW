@@ -44,7 +44,7 @@ public class HteKcMaterialRkServiceImpl extends ServiceImpl<HteKcMaterialRkMappe
         hteKcMaterialRk.setCheckDate(new Date());
         updateById(hteKcMaterialRk);
         // 修改采购rk_flag
-        HteKcMaterialPurchase hteKcMaterialPurchase = iHteKcMaterialPurchaseService.getById(hteKcMaterialRk.getCgDjh());
+        HteKcMaterialPurchase hteKcMaterialPurchase = iHteKcMaterialPurchaseService.getById(hteKcMaterialRk.getCgDjhDesc());
         hteKcMaterialPurchase.setRkFlag(1);
         iHteKcMaterialPurchaseService.updateById(hteKcMaterialPurchase);
         // 保存入库单库存记录

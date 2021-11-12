@@ -67,10 +67,10 @@ public class HteKcMaterialRk implements Serializable {
     /**
      * 采购单据号
      */
-    @Excel(name = "采购单据号", width = 15, dictTable = "hte_kc_material_purchase", dicText = "djh", dicCode = "id")
-    @Dict(dictTable = "hte_kc_material_purchase", dicText = "djh", dicCode = "id")
+    @Excel(name = "采购单据号", width = 15, dictTable = "hte_kc_material_purchase", dicText = "djh_desc", dicCode = "id")
+    @Dict(dictTable = "hte_kc_material_purchase", dicText = "djh_desc", dicCode = "id")
     @ApiModelProperty(value = "采购单据号")
-    private java.lang.String cgDjh;
+    private java.lang.String cgDjhDesc;
     /**
      * 入库单据号
      */

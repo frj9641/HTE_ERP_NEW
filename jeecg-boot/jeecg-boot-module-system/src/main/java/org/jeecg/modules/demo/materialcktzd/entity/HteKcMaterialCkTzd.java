@@ -58,10 +58,10 @@ public class HteKcMaterialCkTzd implements Serializable {
     @ApiModelProperty(value = "单据类型")
     private java.lang.Integer type;
 	/**入库单号*/
-	@Excel(name = "入库单号", width = 15, dictTable = "hte_kc_material_rk", dicText = "djh", dicCode = "id")
-	@Dict(dictTable = "hte_kc_material_rk", dicText = "djh", dicCode = "id")
+	@Excel(name = "入库单号", width = 15, dictTable = "hte_kc_material_rk", dicText = "djh_desc", dicCode = "id")
+	@Dict(dictTable = "hte_kc_material_rk", dicText = "djh_desc", dicCode = "id")
     @ApiModelProperty(value = "入库单号")
-    private java.lang.String rkDjh;
+    private java.lang.String rkDjhDesc;
 	/**单据号*/
 	@Excel(name = "单据号", width = 15)
     @ApiModelProperty(value = "单据号")
