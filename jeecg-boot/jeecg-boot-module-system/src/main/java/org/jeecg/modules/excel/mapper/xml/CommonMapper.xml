@@ -2,10 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.excel.mapper.CommonMapper">
+    <!--    <insert id="insertExcel">
+            insert into hte_kc()
+            <foreach collection="list">
+                values ()
+            </foreach>
+        </insert>-->
+
     <insert id="insertExcel">
-        insert into ???()
-        <foreach collection="list">
-            values ()
+        insert into hte_kc_material_purchase(id,djh,site_id, material_id, supply_id, sl_t, dj, yfdj, zje, cg_date,
+        creater,
+        remark, check_flag, create_time, check_date,rk_flag,purchase_way)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+            #{item.id},#{item.0},#{item.1},#{item.2},#{item.3},#{item.4},#{item.5},#{item.6},#{item.7},
+            #{item.8},#{item.9},#{item.10},#{item.11},#{item.12},#{item.13},#{item.14},#{item.15}
+            )
         </foreach>
     </insert>
 
