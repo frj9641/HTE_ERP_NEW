@@ -66,7 +66,7 @@ public class ExcelWorker {
             }
         }
         long t2 = System.currentTimeMillis();
-        System.out.println("===>插入"+ xssfSheet.getLastRowNum() +" 条， 总计耗时：" + (t2 - t1)/1000 + "s");
+        System.out.println("===>插入" + xssfSheet.getLastRowNum() + " 条， 总计耗时：" + (t2 - t1) / 1000 + "s");
     }
 
     /**
