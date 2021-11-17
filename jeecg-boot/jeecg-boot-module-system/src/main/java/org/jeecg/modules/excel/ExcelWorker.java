@@ -1,6 +1,7 @@
 package org.jeecg.modules.excel;
 
-import org.apache.poi.ss.usermodel.CellType;
+import com.monitorjbl.xlsx.StreamingReader;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -29,42 +30,35 @@ public class ExcelWorker {
     /**
      * 导入excel方法
      *
-     * @param is       excel文件输入流
-     * @param index    第几个工作簿，默认为0
-     * @param firstCol 第几行开始解析，有表头的默认为1
+     * @param is    excel文件输入流
+     * @param index 第几个工作簿，默认为0
      */
     @Transactional
-    public void importExcel(InputStream is, int index, int firstCol) {
+    public void importExcel(InputStream is, int index) {
         long t1 = System.currentTimeMillis();
-        XSSFWorkbook xssfWorkbook = null;
-        try {
-            xssfWorkbook = new XSSFWorkbook(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Workbook xssfWorkbook = StreamingReader.builder().rowCacheSize(10).bufferSize(8192).open(is);
         if (xssfWorkbook == null) throw new RuntimeException("输入流错误");
         // 默认获取第一个工作部，可作为参数
-        XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(index);
+        Sheet xssfSheet = xssfWorkbook.getSheetAt(index);
         // 雪花算法id生成器
         IdWorker worker = new IdWorker(1, 1, 1);
         List<Map<String, String>> list = new ArrayList<>();
         // 除表头外的第一行，可作为参数
-        for (int r = firstCol; r < xssfSheet.getLastRowNum(); r++) {
-            XSSFRow row = xssfSheet.getRow(r);
+        for (Row row : xssfSheet) {
+            if (row.getRowNum() == 0) continue;
             Map<String, String> map = new HashMap<>();
-            if (row != null) {
-                map.put("id", String.valueOf(worker.nextId()));
-                for (int i = 0; i < row.getLastCellNum(); i++) {
-                    map.put(String.valueOf(i), getValue(row.getCell(i)));
-                }
-                list.add(map);
+            map.put("id", String.valueOf(worker.nextId()));
+            for (Cell cell : row) {
+                map.put(String.valueOf(cell.getColumnIndex()), getValue(cell));
             }
+            list.add(map);
             // 数量达到指定或者遍历到最后一行则进行batch插入
-            if (list.size() == 20000 || r == xssfSheet.getLastRowNum() - 1) {
+            if (list.size() == 100000 || row.getRowNum() == xssfSheet.getLastRowNum() - 1) {
                 commonMapper.insertExcel(list);
                 list.clear();
             }
         }
+
         long t2 = System.currentTimeMillis();
         System.out.println("===>插入" + xssfSheet.getLastRowNum() + " 条， 总计耗时：" + (t2 - t1) / 1000 + "s");
     }
@@ -75,7 +69,7 @@ public class ExcelWorker {
      * @param xSSFCell
      * @return
      */
-    private static String getValue(XSSFCell xSSFCell) {
+    private static String getValue(Cell xSSFCell) {
         if (xSSFCell == null) {
             return null;
         }
