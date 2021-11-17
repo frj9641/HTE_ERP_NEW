@@ -2,6 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.excel.mapper.CommonMapper">
+    <!--    <insert id="insertExcel">-->
+    <!--        insert into hte_kc_material_purchase(id,djh,site_id, material_id, supply_id, sl_t, dj, yfdj, zje, cg_date, creater,-->
+    <!--         remark, check_flag, create_time, check_date,rk_flag,purchase_way)-->
+    <!--        values (#{id},#{0},#{1},#{2},#{3},#{4},#{5},#{6},#{7},#{8},#{9},#{10},#{11},#{12},#{13},#{14},#{15})-->
+    <!--    </insert>-->
+
+    <!--    <insert id="insertExcel">-->
+    <!--        insert into hte_kc_material_rk(id,djh,site_id, material_id, supply_id, sl_t, rk_date, creater,-->
+    <!--         remark, check_flag, create_time, check_date,kc_sl_t)-->
+    <!--        values (#{id},#{0},#{1},#{2},#{3},#{4},#{5},#{6},#{7},#{8},#{9},#{10},#{11})-->
+    <!--    </insert>-->
+
     <insert id="insertExcel">
         insert into hte_kc_material_purchase(id,djh,site_id, material_id, supply_id, sl_t, dj, yfdj, zje, cg_date,
         creater,remark, check_flag, create_time, check_date,rk_flag,purchase_way)
@@ -13,5 +25,5 @@
             )
         </foreach>
     </insert>
-
 </mapper>
+

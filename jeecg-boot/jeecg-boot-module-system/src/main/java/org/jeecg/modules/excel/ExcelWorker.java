@@ -57,8 +57,8 @@ public class ExcelWorker {
                 for (int i = 0; i < row.getLastCellNum(); i++) {
                     map.put(String.valueOf(i), getValue(row.getCell(i)));
                 }
+                list.add(map);
             }
-            list.add(map);
             // 数量达到指定或者遍历到最后一行则进行batch插入
             if (list.size() == 20000 || r == xssfSheet.getLastRowNum() - 1) {
                 commonMapper.insertExcel(list);
