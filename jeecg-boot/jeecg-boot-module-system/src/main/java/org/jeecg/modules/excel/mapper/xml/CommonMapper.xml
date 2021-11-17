@@ -4,7 +4,9 @@
 <mapper namespace="org.jeecg.modules.excel.mapper.CommonMapper">
     <insert id="insertExcel">
         insert into ???()
-        values ()
+        <foreach collection="list">
+            values ()
+        </foreach>
     </insert>
 
 </mapper>

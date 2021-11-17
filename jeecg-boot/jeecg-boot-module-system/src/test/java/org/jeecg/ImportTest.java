@@ -19,7 +19,7 @@ public class ImportTest {
 
     @Test
     public void test() throws FileNotFoundException {
-        InputStream fileInputStream = new FileInputStream("D:\\jeecg-boot\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\p.xlsx");
+        InputStream fileInputStream = new FileInputStream("");
         System.out.println(excelWorker);
         excelWorker.importExcel(fileInputStream, 0, 1);
     }
