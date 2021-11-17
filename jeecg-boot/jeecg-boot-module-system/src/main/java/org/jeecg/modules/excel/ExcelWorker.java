@@ -49,7 +49,7 @@ public class ExcelWorker {
             Map<String, String> map = new HashMap<>();
             map.put("id", String.valueOf(worker.nextId()));
             for (Cell cell : row) {
-                map.put(String.valueOf(cell.getColumnIndex()), getValue(cell));
+                map.put(String.valueOf((char) (cell.getColumnIndex() + (int) 'A')), getValue(cell));
             }
             list.add(map);
             // 数量达到指定或者遍历到最后一行则进行batch插入

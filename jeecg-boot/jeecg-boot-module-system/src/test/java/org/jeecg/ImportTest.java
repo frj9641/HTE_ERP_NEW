@@ -18,6 +18,11 @@ public class ImportTest {
     ExcelWorker excelWorker;
 
     @Test
+    public void indexTest(){
+        System.out.println(String.valueOf((char) (1 + (int) 'A')));
+    }
+
+    @Test
     public void test() throws FileNotFoundException {
         InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\p.xlsx");
         System.out.println(excelWorker);
