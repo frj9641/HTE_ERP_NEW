@@ -53,7 +53,7 @@ public class ExcelWorker {
             }
             list.add(map);
             // 数量达到指定或者遍历到最后一行则进行batch插入
-            if (list.size() == 100000 || row.getRowNum() == xssfSheet.getLastRowNum() - 1) {
+            if (list.size() == 100000 || row.getRowNum() == xssfSheet.getLastRowNum()) {
                 commonMapper.insertExcel(list);
                 list.clear();
             }
