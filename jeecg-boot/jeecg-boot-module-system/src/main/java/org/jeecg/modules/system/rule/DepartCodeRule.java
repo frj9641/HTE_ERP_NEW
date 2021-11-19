@@ -10,6 +10,7 @@ import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.service.ISysDepartService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -57,6 +58,12 @@ public class DepartCodeRule implements IFillRuleHandler {
                 strArray[1] = "1";
                 return strArray;
             } else {
+                departList.sort(new Comparator<SysDepart>() {
+                    @Override
+                    public int compare(SysDepart o1, SysDepart o2) {
+                        return Integer.parseInt(o2.getOrgCode()) - Integer.parseInt(o1.getOrgCode());
+                    }
+                });
                 SysDepart depart = departList.get(0);
                 oldOrgCode = depart.getOrgCode();
                 orgType = depart.getOrgType();
