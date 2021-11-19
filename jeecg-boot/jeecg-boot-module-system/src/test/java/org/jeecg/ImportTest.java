@@ -79,5 +79,20 @@ public class ImportTest {
         excelWorker.importExcel(fileInputStream, 0);
     }
 
+    @Test
+    public void testWaterDataCollectMain() throws FileNotFoundException {
+        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\water_data_collect_main.xlsx");
+        System.out.println(excelWorker);
+        excelWorker.importExcel(fileInputStream, 0);
+    }
+
+    @Test
+    public void testWaterDataCollectDetail() throws FileNotFoundException {
+        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\water_data_collect_detail" +
+                ".xlsx");
+        System.out.println(excelWorker);
+        excelWorker.importExcel(fileInputStream, 0);
+    }
+
 
 }
