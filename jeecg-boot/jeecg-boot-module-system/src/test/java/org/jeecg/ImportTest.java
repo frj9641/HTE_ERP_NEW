@@ -18,7 +18,7 @@ public class ImportTest {
     ExcelWorker excelWorker;
 
     @Test
-    public void indexTest(){
+    public void indexTest() {
         System.out.println(String.valueOf((char) (1 + (int) 'A')));
     }
 
@@ -94,5 +94,24 @@ public class ImportTest {
         excelWorker.importExcel(fileInputStream, 0);
     }
 
+    public void testPurchaseQc() throws FileNotFoundException {
+        InputStream fileInputStream = new FileInputStream("D:\\jeecg-boot\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\qc.xlsx");
+        System.out.println(excelWorker);
+        excelWorker.importExcelQC(fileInputStream, 0, "CGQC");
+    }
+
+    @Test
+    public void testRkQc() throws FileNotFoundException {
+        InputStream fileInputStream = new FileInputStream("D:\\jeecg-boot\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\qc.xlsx");
+        System.out.println(excelWorker);
+        excelWorker.importExcelQC(fileInputStream, 0, "RKQC");
+    }
+
+    @Test
+    public void testFillZero() {
+        String str = String.format("%014d", 10);
+        System.out.println(str);
+        System.out.println(str.length());
+    }
 
 }

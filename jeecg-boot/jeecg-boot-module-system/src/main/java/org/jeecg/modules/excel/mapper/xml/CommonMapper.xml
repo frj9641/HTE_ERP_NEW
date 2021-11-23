@@ -37,15 +37,15 @@
     <!--        </foreach>-->
     <!--    </insert>-->
 
-<!--    <insert id="insertExcel">-->
-<!--        insert into hte_kc_material_rk_data_collect-->
-<!--        (id,parent_id,site_id, material_id, supply_id, rk_date, hy_date, creater, create_time)-->
-<!--        values-->
-<!--        <foreach item="item" index="index" collection="list" separator=",">-->
-<!--            (#{item.id},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},-->
-<!--            #{item.I})-->
-<!--        </foreach>-->
-<!--    </insert>-->
+    <!--    <insert id="insertExcel">-->
+    <!--        insert into hte_kc_material_rk_data_collect-->
+    <!--        (id,parent_id,site_id, material_id, supply_id, rk_date, hy_date, creater, create_time)-->
+    <!--        values-->
+    <!--        <foreach item="item" index="index" collection="list" separator=",">-->
+    <!--            (#{item.id},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},-->
+    <!--            #{item.I})-->
+    <!--        </foreach>-->
+    <!--    </insert>-->
 
     <!--<insert id="insertExcel">
         insert into hte_kc_material_rk_data_collect_detail
@@ -90,6 +90,28 @@
         values
         <foreach item="item" index="index" collection="list" separator=",">
             (#{item.id},#{item.A},#{item.B},#{item.C})
+        </foreach>
+    </insert>
+
+    <insert id="insertPurchaseQC">
+        insert into hte_kc_material_purchase(id,djh,site_id, material_id, supply_id, sl_t, dj, yfdj, zje, cg_date,
+        creater,remark, check_flag, create_time, check_date,rk_flag,purchase_way,djh_desc)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (
+            #{item.id},#{item.djh},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},
+            curdate(),'付仁杰','',2,curdate(),curdate(),1,1,#{item.H}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertRkQC">
+        insert into hte_kc_material_rk(id,djh,site_id, material_id, supply_id, sl_t, rk_date, creater,
+        remark, check_flag, create_time, check_date,kc_sl_t,djh_desc)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.djh},#{item.A},#{item.B},#{item.C},#{item.D},curdate(),'付仁杰','',
+            2,curdate(),curdate(),#{item.D},#{item.H})
         </foreach>
     </insert>
 
