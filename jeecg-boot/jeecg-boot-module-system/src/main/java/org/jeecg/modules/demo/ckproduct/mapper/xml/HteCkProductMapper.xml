@@ -2,4 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.demo.ckproduct.mapper.HteCkProductMapper">
 
+    <select id="getSumWater" resultType="java.util.Map" >
+        SELECT
+	b.depart_name,
+	c.product_name, d.collect_point,sum(a.sl_t) as sl_t
+FROM
+	`hte_ck_product` a
+left join sys_depart b on b.org_code = a.site_id
+left join hte_product c on c.id = a.product_id
+left join hte_collect_point d on d.id = a.collect_id
+WHERE
+	a.check_flag = 2 and
+	date(a.tz_date) between #{fromDate} and #{toDate}
+	and d.collect_point='排放口'
+	group by b.depart_name, c.product_name, d.collect_point
+    </select>
+
+    <select id="getSumSludge" resultType="java.util.Map" >
+		SELECT
+	b.depart_name,
+	c.product_name, d.collect_point, sum(a.sl_t) as sl_t
+FROM
+	`hte_ck_product` a
+left join sys_depart b on b.org_code = a.site_id
+left join hte_product c on c.id = a.product_id
+left join hte_collect_point d on d.id = a.collect_id
+WHERE
+	a.check_flag = 2 and
+	date(a.tz_date) between #{fromDate} and #{toDate}
+	and product_name='总泥量'
+	group by b.depart_name, c.product_name, d.collect_point
+	</select>
+
 </mapper>

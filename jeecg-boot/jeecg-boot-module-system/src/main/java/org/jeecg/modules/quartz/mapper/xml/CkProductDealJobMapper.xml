@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.quartz.mapper.CkProductDealJobMapper">
+
+	<!-- 根据jobClassName查询 -->
+	<select id="getCkProduct" resultType="org.jeecg.modules.quartz.entity.CkProduct">
+		SELECT * FROM sitename_product_month
+	</select>
+
+	<insert id="saveSumWater">
+		insert into sitename_product_month (id, type, sitename, ck_year_month, sum_water, sum_sludge)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.id},#{item.type},#{item.sitename},#{item.ckYearMonth},#{item.sumWater},#{item.sumSludge})
+		</foreach>
+	</insert>
+
+</mapper>
