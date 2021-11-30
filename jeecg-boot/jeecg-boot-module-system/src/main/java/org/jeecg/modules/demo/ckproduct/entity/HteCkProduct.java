@@ -139,4 +139,24 @@ public class HteCkProduct implements Serializable {
     @Excel(name = "创建人", width = 15)
     @ApiModelProperty(value = "创建人")
     private java.lang.String creater;
+    /**
+     * 厂站名称
+     */
+    @Excel(name = "厂站名称", width = 15)
+    @ApiModelProperty(value = "厂站名称")
+    private java.lang.String departName;
+    /**
+     * 创建人
+     */
+    @Excel(name = "创建人", width = 15)
+    @ApiModelProperty(value = "创建人")
+    private java.lang.String productName;
+    /**
+     * 创建人
+     */
+    @Excel(name = "创建人", width = 15)
+    @ApiModelProperty(value = "创建人")
+    private java.lang.String collectPoint;
+
+
 }

@@ -651,4 +651,21 @@ public class DateUtils extends PropertyEditorSupport {
         return calendar.get(Calendar.YEAR);
     }
 
+    /**
+     * 功能描述: 指定日期往前推n天
+     *
+     * @param: []
+     * @return: java.util.List<java.lang.String>
+     * @auther: luopf
+     * @date: 2018/10/18 11:30
+     */
+    public static Date getPreDate(Date date, int n){
+//        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DATE, calendar.get(Calendar.DATE)-n);
+        Date updateDate = calendar.getTime();
+        return updateDate;
+    }
+
 }

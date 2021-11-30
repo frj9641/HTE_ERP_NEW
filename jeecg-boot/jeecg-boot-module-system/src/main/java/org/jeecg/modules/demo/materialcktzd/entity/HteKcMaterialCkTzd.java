@@ -100,4 +100,8 @@ public class HteKcMaterialCkTzd implements Serializable {
 	@Excel(name = "操作员", width = 15)
     @ApiModelProperty(value = "操作员")
     private java.lang.String creater;
+
+    @Excel(name = "物料名称", width = 15)
+    @ApiModelProperty(value = "物料名称")
+    private java.lang.String material;
 }

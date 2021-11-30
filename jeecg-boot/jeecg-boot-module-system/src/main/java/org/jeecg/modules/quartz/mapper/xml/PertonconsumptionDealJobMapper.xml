@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper">
+
+	<insert id="insertData" parameterType="java.util.ArrayList">
+		insert into medicament_use_data
+		(<foreach collection="list" item="item" index="index" separator=",">${item.key}</foreach>)
+		values
+		(
+		<foreach collection="list" item="subitem" index="index" separator=",">
+			#{subitem.value}
+		</foreach>
+		)
+	</insert>
+
+</mapper>
