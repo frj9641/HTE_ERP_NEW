@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.jeecg.common.aspect.annotation.Dict;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,8 +17,8 @@ import java.io.Serializable;
  * @Version: V1.0
  */
 @Data
-@TableName("sitename_product_month")
-public class CkProduct implements Serializable {
+@TableName("medicament_use_data")
+public class Pertonconsumption implements Serializable {
     private static final long serialVersionUID = 1L;
 
 	/**id*/

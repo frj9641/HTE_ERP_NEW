@@ -1,0 +1,29 @@
+org.springframework.jdbc.BadSqlGrammarException:
+### Error updating database.  Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1
+### The error may exist in file [E:\IdeaProject\hte_erp_new\jeecg-boot\jeecg-boot-module-system\target\classes\org\jeecg\modules\quartz\mapper\xml\PertonconsumptionDealJobMapper.xml]
+### The error may involve org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper.insertData-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO medicament_use_data
+ (shihui, year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilaishui, PAC,
+  static_month, cina, jiaona, sitename, yanghuaji, PAM, liusuanyatie)
+ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax;
+ check the manual that corresponds to your MySQL server version for the right syntax to use near
+ 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1
+; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException:
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right
+ syntax to use near 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1
+
+
+org.springframework.jdbc.BadSqlGrammarException:
+### Error updating database.  Cause: java.sql.SQLSyntaxErrorException:
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1
+### The error may exist in file [E:\IdeaProject\hte_erp_new\jeecg-boot\jeecg-boot-module-system\target\classes\org\jeecg\modules\quartz\mapper\xml\PertonconsumptionDealJobMapper.xml]
+### The error may involve org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper.insertData-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO medicament_use_data (shihui, year_month, huoxingtan, static_year, putaotang, dundai,
+ yansuan, yongdian, zilaishui, PAC, static_month, cina, jiaona, sitename, yanghuaji, PAM, liusuanyatie)
+ VALUES (65700.0, 2021 - 10 - 01, 450.0, 2021, 875.0, 222.0, 31690.0, 33557.0, 1951.0, 875.0, 10,
+  122480.0, 9625.0, 宁波绿舟, 2000.0, 175.0, 2410.0)
+### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1
+; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'year_month, huoxingtan, static_year, putaotang, dundai, yansuan, yongdian, zilai' at line 1

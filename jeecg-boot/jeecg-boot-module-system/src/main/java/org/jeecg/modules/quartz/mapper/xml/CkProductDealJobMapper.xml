@@ -2,17 +2,201 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.quartz.mapper.CkProductDealJobMapper">
 
-	<!-- 根据jobClassName查询 -->
-	<select id="getCkProduct" resultType="org.jeecg.modules.quartz.entity.CkProduct">
-		SELECT * FROM sitename_product_month
+    <insert id="saveCkProduct">
+        insert into sitename_product_month (type, sitename, ck_year_month, sum_water, sum_sludge)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.type},#{item.sitename},#{item.ckYearMonth},#{item.sumWater},#{item.sumSludge})
+        </foreach>
+    </insert>
+
+    <select id="getCkProductAll" resultType="java.util.Map">
+		select a.`项目类型`, a.`日期`, a.`汇总水量`, a.`汇总泥量`,a.`产泥率（千分之一）`, round((a.`汇总水量`-b.`汇总水量`)/b.`汇总水量`, 4) as 水量_环比,
+		 round((a.`汇总水量`-c.`汇总水量`)/c.`汇总水量`, 4) as 水量_同比, round((a.`汇总泥量`-b.`汇总泥量`)/b.`汇总泥量`, 4) as 泥量_环比,
+		 round((a.`汇总泥量`-c.`汇总泥量`)/c.`汇总泥量`, 4) as 泥量_同比, round((a.`产泥率（千分之一）`-b.`产泥率（千分之一）`)/b.`产泥率（千分之一）`, 4) as 产泥率_环比,
+		 round((a.`产泥率（千分之一）`-c.`产泥率（千分之一）`)/c.`产泥率（千分之一）`, 4) as 产泥率_同比
+from
+(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
+where ck_year_month=#{static_month}) a
+left join
+(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
+where ck_year_month=date_sub(#{static_month}, interval 1 month)) b on 1=1
+left join
+(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
+where ck_year_month=date_sub(#{static_month}, interval 1 year)) c  on 1=1
 	</select>
 
-	<insert id="saveSumWater">
-		insert into sitename_product_month (id, type, sitename, ck_year_month, sum_water, sum_sludge)
-		values
-		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.id},#{item.type},#{item.sitename},#{item.ckYearMonth},#{item.sumWater},#{item.sumSludge})
-		</foreach>
-	</insert>
+    <delete id="batchDelete">
+        delete from sitename_product_month where ck_year_month = #{ckYearMonth}
+    </delete>
+
+    <delete id="batchDeleteCkProductGeneral">
+        delete from test_ckproduct_general where static_year_month = #{ckYearMonth}
+    </delete>
+
+    <insert id="saveCkProductGenaral">
+        INSERT INTO test_ckproduct_general ( project_type, static_year_month, static_year, static_month, sum_water, sum_sludge, sludge_rate, water_huanbi, water_tongbi, sludge_huanbi, sludge_tongbi, rate_huanbi, rate_tongbi ) SELECT
+a.`project_type`,
+a.`ck_year_month`,
+YEAR ( a.`ck_year_month` ) AS static_year,
+MONTH ( a.`ck_year_month` ) AS static_month,
+a.`sum_water`,
+a.`sum_sludge`,
+a.`sludge_rate`,
+(case when  b.`sum_water` != 0 then round(( a.`sum_water` - b.`sum_water` )/ b.`sum_water`, 4 ) else 0 end) AS water_huanbi,
+(case when  c.`sum_water` != 0 then round(( a.`sum_water` - c.`sum_water` )/ c.`sum_water`, 4 ) else 0 end) AS water_tongbi,
+(case when b.`sum_sludge` != 0 then round(( a.`sum_sludge` - b.`sum_sludge` )/ b.`sum_sludge`, 4 ) else 0 end) AS sludge_huanbi,
+(case when c.`sum_sludge` != 0 then round(( a.`sum_sludge` - c.`sum_sludge` )/ c.`sum_sludge`, 4 ) else 0 end) AS sludge_tongbi,
+(case when b.`sludge_rate` != 0 then round(( a.`sludge_rate` - b.`sludge_rate` )/ b.`sludge_rate`, 4 ) else 0 end) AS rate_huanbi,
+(case when c.`sludge_rate` != 0 then round(( a.`sludge_rate` - c.`sludge_rate` )/ c.`sludge_rate`, 4 ) else 0 end) AS rate_tongbi
+FROM
+	(
+	SELECT
+		"所有项目" AS project_type,
+		ck_year_month ,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = #{ckYearMonth}
+	) a
+	LEFT JOIN (
+	SELECT
+		"所有项目" AS project_type,
+		ck_year_month ,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+	ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 MONTH )) b ON 1 = 1
+	LEFT JOIN (
+	SELECT
+		"所有项目" AS project_type,
+		ck_year_month ,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+	ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 YEAR )) c ON 1 = 1 UNION ALL-- 电镀 概况
+SELECT
+	a.`project_type`,
+	a.`ck_year_month` ,
+	YEAR ( a.`ck_year_month` ) AS static_year,
+	MONTH ( a.`ck_year_month` ) AS static_month,
+	a.`sum_water`,
+	a.`sum_sludge`,
+	a.`sludge_rate`,
+	(case when b.`sum_water` != 0 then round(( a.`sum_water` - b.`sum_water` )/ b.`sum_water`, 4 ) else 0 end) AS water_huanbi,
+	(case when c.`sum_water` != 0 then round(( a.`sum_water` - c.`sum_water` )/ c.`sum_water`, 4 ) else 0 end) AS water_tongbi,
+	(case when b.`sum_sludge` != 0 then round(( a.`sum_sludge` - b.`sum_sludge` )/ b.`sum_sludge`, 4 ) else 0 end) AS sludge_huanbi,
+	(case when c.`sum_sludge` != 0 then round(( a.`sum_sludge` - c.`sum_sludge` )/ c.`sum_sludge`, 4 ) else 0 end) AS sludge_tongbi,
+	(case when b.`sludge_rate` != 0 then round(( a.`sludge_rate` - b.`sludge_rate` )/ b.`sludge_rate`, 4 ) else 0 end) AS rate_huanbi,
+	(case when c.`sludge_rate` != 0 then round(( a.`sludge_rate` - c.`sludge_rate` )/ c.`sludge_rate`, 4 ) else 0 end) AS rate_tongbi
+FROM
+	(
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = #{ckYearMonth}
+		AND type = "电镀"
+	) a
+	LEFT JOIN (
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 MONTH )
+		AND type = "电镀"
+	) b ON 1 = 1
+	LEFT JOIN (
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 YEAR )
+		AND type = "电镀"
+	) c ON 1 = 1 UNION ALL-- 非电镀 概况
+SELECT
+	a.`project_type`,
+	a.`ck_year_month` ,
+	YEAR ( a.`ck_year_month` ) AS static_year,
+	MONTH ( a.`ck_year_month` ) AS static_month,
+	a.`sum_water`,
+	a.`sum_sludge`,
+	a.`sludge_rate`,
+	(case when b.`sum_water` != 0 then round(( a.`sum_water` - b.`sum_water` )/ b.`sum_water`, 4 ) else 0 end) AS water_huanbi,
+	(case when c.`sum_water` != 0 then round(( a.`sum_water` - c.`sum_water` )/ c.`sum_water`, 4 ) else 0 end) AS water_tongbi,
+	(case when b.`sum_sludge` != 0 then round(( a.`sum_sludge` - b.`sum_sludge` )/ b.`sum_sludge`, 4 ) else 0 end) AS sludge_huanbi,
+	(case when c.`sum_sludge` != 0 then round(( a.`sum_sludge` - c.`sum_sludge` )/ c.`sum_sludge`, 4 ) else 0 end) AS sludge_tongbi,
+	(case when b.`sludge_rate` != 0 then round(( a.`sludge_rate` - b.`sludge_rate` )/ b.`sludge_rate`, 4 ) else 0 end) AS rate_huanbi,
+	(case when c.`sludge_rate` != 0 then round(( a.`sludge_rate` - c.`sludge_rate` )/ c.`sludge_rate`, 4 ) else 0 end) AS rate_tongbi
+FROM
+	(
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = #{ckYearMonth}
+		AND type = "非电镀"
+	) a
+	LEFT JOIN (
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 MONTH )
+		AND type = "非电镀"
+	) b ON 1 = 1
+	LEFT JOIN (
+	SELECT
+		type AS project_type,
+		ck_year_month,
+		round( sum( sum_water ), 2 ) AS sum_water,
+		round( sum( sum_sludge ), 2 ) AS sum_sludge,
+		(case when sum( sum_water ) != 0 then round( sum( sum_sludge )/ sum( sum_water )* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{ckYearMonth}, INTERVAL 1 YEAR )
+		AND type = "非电镀"
+	) c ON 1 = 1;
+    </insert>
+
+    <select id="getCkProductGeneralByProjectType" resultType="java.util.Map">
+		select * from test_ckproduct_general where project_type = #{projectType} and static_year_month = #{staticYearMonth}
+	</select>
+
 
 </mapper>

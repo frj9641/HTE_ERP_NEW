@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.demo.materialcktzd.mapper.HteKcMaterialCkTzdMapper">
 
+    <select id="getMaterialConsumption" resultType="java.util.Map">
+        SELECT b.material, sum(sl_kg) as sl_kg FROM `hte_kc_material_ck_tzd` a
+        LEFT JOIN hte_kc_material b on a.material_id = b.id
+        where a.check_flag = 2 and operate_date between #{fromDate} and #{toDate}
+        group by material_id
+    </select>
+
+    <select id="getMaterialConsumptionBySite" resultType="java.util.Map">
+        SELECT concat(c.depart_name, b.material) as description, c.depart_name, b.material, sum(sl_kg) as sl_kg FROM `hte_kc_material_ck_tzd` a
+        LEFT JOIN hte_kc_material b on a.material_id = b.id
+        left join sys_depart c on c.org_code = a.site_id
+        where a.check_flag = 2 and operate_date between #{fromDate} and #{toDate}
+        group by depart_name, material_id
+    </select>
+
 </mapper>
