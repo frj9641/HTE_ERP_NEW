@@ -7,9 +7,7 @@
         from sys_user_depart
         where user_id = #{id}
     </select>
-    <select id="selectButtonPermissions" resultType="java.lang.String">
 
-    </select>
     <select id="selectRoles" resultType="java.lang.String">
         select role_id
         from sys_user_role

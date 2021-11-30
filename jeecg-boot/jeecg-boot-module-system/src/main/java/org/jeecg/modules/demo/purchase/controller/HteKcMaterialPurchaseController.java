@@ -133,7 +133,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
-     * 获取出库单据号
+     * 获取采购单据号
      *
      * @param id
      * @return
@@ -169,7 +169,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
-     * 获取调增单据号
+     * 获取调整单据号
      *
      * @param id
      * @return
