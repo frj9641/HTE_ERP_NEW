@@ -1,8 +1,6 @@
 package org.jeecg.modules.demo.dataCollect.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +10,11 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecg.modules.demo.dataCollect.vo.HtePortDataCollectDetailVO;
+import org.jeecg.modules.demo.port.entity.HteCollectPoint;
+import org.jeecg.modules.demo.port.service.IHteCollectPointService;
+import org.jeecg.modules.demo.testIndex.entity.HteTestIndex;
+import org.jeecg.modules.demo.testIndex.service.IHteTestIndexService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -37,7 +40,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -57,6 +59,10 @@ public class HtePortDataCollectController {
     private IHtePortDataCollectService htePortDataCollectService;
     @Autowired
     private IHtePortDataCollectDetailService htePortDataCollectDetailService;
+    @Autowired
+    private IHteCollectPointService iHteCollectPointService;
+    @Autowired
+    private IHteTestIndexService iHteTestIndexService;
 
     /**
      * 分页列表查询
@@ -182,7 +188,18 @@ public class HtePortDataCollectController {
     @GetMapping(value = "/queryHtePortDataCollectDetailByMainId")
     public Result<?> queryHtePortDataCollectDetailListByMainId(@RequestParam(name = "id", required = true) String id) {
         List<HtePortDataCollectDetail> htePortDataCollectDetailList = htePortDataCollectDetailService.selectByMainId(id);
-        return Result.OK(htePortDataCollectDetailList);
+        // 替换加入dict_text
+        List<HtePortDataCollectDetailVO> htePortDataCollectDetailVOList = new ArrayList<>();
+        for (HtePortDataCollectDetail detail : htePortDataCollectDetailList) {
+            HtePortDataCollectDetailVO htePortDataCollectDetailVO = new HtePortDataCollectDetailVO();
+            BeanUtils.copyProperties(detail, htePortDataCollectDetailVO);
+            HteCollectPoint point = iHteCollectPointService.getOne(new QueryWrapper<HteCollectPoint>().eq("id", detail.getCollectPointId()));
+            htePortDataCollectDetailVO.setCollectPointName(point.getCollectPoint());
+            HteTestIndex testIndex = iHteTestIndexService.getOne(new QueryWrapper<HteTestIndex>().eq("id", detail.getTestIndexId()));
+            htePortDataCollectDetailVO.setTestIndexName(testIndex.getTestIndex());
+            htePortDataCollectDetailVOList.add(htePortDataCollectDetailVO);
+        }
+        return Result.OK(htePortDataCollectDetailVOList);
     }
 
     /**
