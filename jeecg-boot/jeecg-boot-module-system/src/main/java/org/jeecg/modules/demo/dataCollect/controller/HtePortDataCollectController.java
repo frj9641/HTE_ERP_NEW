@@ -132,6 +132,30 @@ public class HtePortDataCollectController {
     }
 
     /**
+     * 审核临时方法
+     *
+     * @param htePortDataCollectPage
+     * @return
+     */
+    @PutMapping(value = "/check")
+    public Result<?> check(@RequestBody HtePortDataCollectPage htePortDataCollectPage) {
+        HtePortDataCollect htePortDataCollect = new HtePortDataCollect();
+        BeanUtils.copyProperties(htePortDataCollectPage, htePortDataCollect);
+        HtePortDataCollect htePortDataCollectEntity = htePortDataCollectService.getById(htePortDataCollect.getId());
+        if (htePortDataCollectEntity == null) {
+            return Result.error("未找到对应数据");
+        }
+        htePortDataCollectService.check(htePortDataCollect, htePortDataCollectPage.getHtePortDataCollectDetailList());
+        return Result.OK("编辑成功!");
+    }
+
+    @PostMapping(value = "/addDetail")
+    public Result<?> addDetail(@RequestBody HtePortDataCollectDetail htePortDataCollectDetail) {
+        htePortDataCollectService.addDetail(htePortDataCollectDetail);
+        return Result.OK("编辑成功!");
+    }
+
+    /**
      * 通过id删除
      *
      * @param id

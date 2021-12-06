@@ -44,13 +44,6 @@ public class HtePortDataCollectServiceImpl extends ServiceImpl<HtePortDataCollec
             for (HtePortDataCollectDetail entity : htePortDataCollectDetailList) {
                 //外键设置
                 entity.setParentId(htePortDataCollect.getId());
-                //计算逆波兰表达式
-                HtePortDataCollectAlgorithm algorithm = htePortDataCollectAlgorithmMapper.selectOne(new QueryWrapper<HtePortDataCollectAlgorithm>().eq("test_index_id", entity.getTestIndexId()));
-                String exp = algorithm.getPolandExp();
-                String detailValue = entity.getDetailValue();
-                String res = swapExpValue(exp, detailValue);
-                double v = PolandCalculator.calculate(res);
-                entity.setTestValue(v);
                 htePortDataCollectDetailMapper.insert(entity);
             }
         }
@@ -91,6 +84,28 @@ public class HtePortDataCollectServiceImpl extends ServiceImpl<HtePortDataCollec
                 htePortDataCollectDetailMapper.insert(entity);
             }
         }
+    }
+
+    @Override
+    public void check(HtePortDataCollect htePortDataCollect, List<HtePortDataCollectDetail> htePortDataCollectDetailList) {
+        htePortDataCollectMapper.updateById(htePortDataCollect);
+    }
+
+    @Override
+    public void addDetail(HtePortDataCollectDetail htePortDataCollectDetail) {
+        HtePortDataCollectAlgorithm algorithm = htePortDataCollectAlgorithmMapper.selectOne(new QueryWrapper<HtePortDataCollectAlgorithm>().eq("test_index_id", htePortDataCollectDetail.getTestIndexId()));
+        String detailValue = htePortDataCollectDetail.getDetailValue();
+        if (algorithm == null) {
+            String[] split = detailValue.split(":");
+            String[] value = split[1].split(";");
+            htePortDataCollectDetail.setTestValue(Double.parseDouble(value[0]));
+        } else {
+            String exp = algorithm.getPolandExp();
+            String res = swapExpValue(exp, detailValue);
+            double v = PolandCalculator.calculate(res);
+            htePortDataCollectDetail.setTestValue(v);
+        }
+        htePortDataCollectDetailMapper.insert(htePortDataCollectDetail);
     }
 
     @Override

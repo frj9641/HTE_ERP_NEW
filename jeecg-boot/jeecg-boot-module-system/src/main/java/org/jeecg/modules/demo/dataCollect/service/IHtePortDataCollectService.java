@@ -26,7 +26,7 @@ public interface IHtePortDataCollectService extends IService<HtePortDataCollect>
 	 * 
 	 */
 	public void updateMain(HtePortDataCollect htePortDataCollect,List<HtePortDataCollectDetail> htePortDataCollectDetailList);
-	
+
 	/**
 	 * 删除一对多
 	 */
@@ -36,5 +36,17 @@ public interface IHtePortDataCollectService extends IService<HtePortDataCollect>
 	 * 批量删除一对多
 	 */
 	public void delBatchMain (Collection<? extends Serializable> idList);
-	
+
+	/**
+	 * 审核临时方法
+	 * @param htePortDataCollect
+	 * @param htePortDataCollectDetailList
+	 */
+	public void check(HtePortDataCollect htePortDataCollect,List<HtePortDataCollectDetail> htePortDataCollectDetailList);
+
+	/**
+	 * 明细编辑方法
+	 * @param htePortDataCollectDetail
+	 */
+	void addDetail(HtePortDataCollectDetail htePortDataCollectDetail);
 }
