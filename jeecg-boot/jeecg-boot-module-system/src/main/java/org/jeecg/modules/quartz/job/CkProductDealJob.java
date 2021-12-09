@@ -2,6 +2,7 @@ package org.jeecg.modules.quartz.job;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.util.StringUtils;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.modules.demo.ckproduct.entity.HteCkProduct;
 import org.jeecg.modules.demo.ckproduct.mapper.HteCkProductMapper;
@@ -120,8 +121,16 @@ public class CkProductDealJob implements Job {
      * @Date: 2021/11/29 10:42
     **/
     public List<CkProduct> getProductList(String[] timeZone){
+
+        // 厂站 排放口水量汇总、非排放口水量汇总、调整单不区分采样点汇总
+        List<HteCkProduct> aa = hteCkProductMapper.getNewProductList(timeZone[0], timeZone[1]);
+        Map<String,Map<String, Object>> maxWater = hteCkProductMapper.getMaxCkProductWater(timeZone[0], timeZone[1]);
+        Map<String,Map<String, Object>> sumTzWater = hteCkProductMapper.getSumCkProductTzWater(timeZone[0], timeZone[1]);
+//        List<HteCkProduct> aaa = getNewProductList(maxWater, sumTzWater);
+        // max(排放口水量汇总, 非排放口水量汇总) + 调整单不区分采样点汇总
         List<HteCkProduct> sumWaterList = new ArrayList<>();
-        sumWaterList = hteCkProductMapper.getSumWater(timeZone[0], timeZone[1]);
+//        sumWaterList = hteCkProductMapper.getSumWater(timeZone[0], timeZone[1]);
+        sumWaterList = getNewProductList(maxWater, sumTzWater);
         List<HteCkProduct> sumSludgeList = new ArrayList<>();
         sumSludgeList = hteCkProductMapper.getSumSludge(timeZone[0], timeZone[1]);
         Map<String, CkProduct> productMap = new HashMap();
@@ -165,6 +174,47 @@ public class CkProductDealJob implements Job {
         while (it.hasNext()) {
             Map.Entry<String, CkProduct> entry = it.next();
             productList.add(entry.getValue());
+        }
+        return productList;
+    }
+
+    /**
+     * @Description:  max(排放口水量汇总, 非排放口水量汇总) + 调整单不区分采样点汇总
+     * @Param: [list]
+     * @return: java.util.List<org.jeecg.modules.quartz.entity.CkProduct>
+     * @Author: lpf
+     * @Date: 2021/12/7 17:03
+    **/
+    public List<HteCkProduct> getNewProductList(Map<String,Map<String, Object>> maxWater, Map<String,Map<String, Object>> sumTzWater){
+        List<HteCkProduct> productList = new ArrayList<>();
+        Map<String, Double> map = new HashMap<>();
+        Iterator<Map.Entry<String, Map<String, Object>>> it = maxWater.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Map<String, Object>> entry = it.next();
+            String sitename = entry.getKey();
+            Double slT = (Double)entry.getValue().get("sl_t");
+            map.put(sitename, slT);
+        }
+        Iterator<Map.Entry<String, Map<String, Object>>> it1 = sumTzWater.entrySet().iterator();
+        while (it1.hasNext()) {
+            Map.Entry<String, Map<String, Object>> entry = it1.next();
+            String sitename = entry.getKey();
+            Double slT = (Double)entry.getValue().get("sl_t");
+            if (map.containsKey(sitename)) {
+                map.put(sitename, map.get(sitename)+slT);
+            } else {
+                map.put(sitename, slT);
+            }
+        }
+        Iterator<Map.Entry<String, Double>> it2 = map.entrySet().iterator();
+        while (it2.hasNext()) {
+            Map.Entry<String, Double> entry = it2.next();
+            String sitename = entry.getKey();
+            Double slT = entry.getValue();
+            HteCkProduct product =  new HteCkProduct();
+            product.setDepartName(sitename);
+            product.setSlT(slT);
+            productList.add(product);
         }
         return productList;
     }

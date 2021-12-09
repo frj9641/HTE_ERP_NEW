@@ -17,8 +17,17 @@ import java.util.Map;
 public interface HteCkProductMapper extends BaseMapper<HteCkProduct> {
 
     List<HteCkProduct> getSumWater(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
     List<HteCkProduct> getSumSludge(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
     @MapKey("depart_name")
     Map<String,Object> getSumWaterMap(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    List<HteCkProduct> getNewProductList(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    @MapKey("depart_name")
+    Map<String,Map<String, Object>> getMaxCkProductWater(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    @MapKey("depart_name")
+    Map<String,Map<String, Object>> getSumCkProductTzWater(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 }

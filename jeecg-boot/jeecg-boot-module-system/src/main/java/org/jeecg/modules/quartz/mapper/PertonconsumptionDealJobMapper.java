@@ -21,6 +21,25 @@ import java.util.Map;
 @DS("multi-datasource1")
 public interface PertonconsumptionDealJobMapper extends BaseMapper<Pertonconsumption> {
 
+	void deleteMedicamentUseData(@Param("staticYearMonth") String staticYearMonth, @Param("sitename") String sitename);
+
 	void insertData(@Param("list") List<Map<String,String>> list);
+
+	void savePertonconsumption(@Param("list") List<Map<String,String>> list);
+
+	@MapKey("")
+	List<Map<String, String>> calculatePertonconsumption();
+
+	void truncatePertonconsumption();
+
+	void updateNewColumn();
+
+	void saveSitePertonconsumption(@Param("staticYearMonth") String staticYearMonth, @Param("sitename") String sitename);
+
+	List<String> getSiteList(@Param("staticYearMonth") String staticYearMonth);
+
+	void deleteSitePertonconsumption(@Param("staticYearMonth") String staticYearMonth, @Param("sitename") String sitename);
+
+	void updateSitePertonconsumptionNewColumn(@Param("staticYearMonth") String staticYearMonth, @Param("sitename") String sitename);
 
 }

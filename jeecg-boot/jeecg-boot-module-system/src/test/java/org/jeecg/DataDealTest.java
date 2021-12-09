@@ -45,8 +45,7 @@ public class DataDealTest {
 
     /**
      * @Description: 保存jeecg-boot中的历史产出品数据 至 sitename_product_month, 并汇总test_ckproduct_general
-     * (1) 计算历史数据的同比环比时，考虑空值 & 0值 情况
-     * (2) 当前jeecg-boot中只有10月份的产出品数据，无法统计
+     *               保存：运营中心产出品总量及同比环比、各厂站产出品总量及同比环比
      * @Param: []
      * @return: void
      * @Author: lpf
@@ -56,7 +55,7 @@ public class DataDealTest {
     public void batchSaveCkProjuctGenaral() throws ParseException {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-        Date beginDate = dateFormat1.parse("2019-01-01");
+        Date beginDate = dateFormat1.parse("2018-08-01");
         Date endDate = dateFormat1.parse("2021-11-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
@@ -72,6 +71,14 @@ public class DataDealTest {
                 ckProductDealJobMapper.batchDeleteCkProductGeneral(timeZone[2]);
                 // 保存汇总数据
                 ckProductDealJobMapper.saveCkProductGenaral(timeZone[2]);
+                //
+            }
+            // 处理厂站产出品： 水、泥、产泥率 的同比环比数据，用于厂站月报
+            List<String> siteList =  ckProductDealJobMapper.getSiteList(timeZone[2]);
+            if (siteList.size() > 0) {
+                for (String site : siteList) {
+                    ckProductDealJobMapper.updateSiteCkProductGeneral(site, timeZone[2]);
+                }
             }
             c.setTime(date);
             c.add(Calendar.MONTH, 1); // 月份加1天
@@ -80,9 +87,8 @@ public class DataDealTest {
     }
 
     /**
-     * @Description: 保存jeecg-boot中的药剂使用数据 至 medicament_use_data, 并汇总 test_ckproduct_general
-     *      * (1) 计算历史数据的同比环比时，考虑空值 & 0值 情况
-     *      * (2) 当前jeecg-boot中只有10月份的产出品数据，无法统计
+     * @Description: 保存jeecg-boot中的药剂使用数据 至 medicament_use_data
+     *               保存：运营中心药剂吨耗、各厂站药剂吨耗
      * @Param: []
      * @return: void
      * @Author: lpf
@@ -90,29 +96,31 @@ public class DataDealTest {
     **/
     @Test
     public void perconsumptionTest() throws ParseException {
+
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-        Date beginDate = dateFormat1.parse("2021-10-01");
+        Date beginDate = dateFormat1.parse("2018-01-01");
         Date endDate = dateFormat1.parse("2021-11-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             System.out.println("统计日期----->" + DateUtils.date2Str(date, dateFormat1));
             String[] timeZone = ckProductDealJob.getTimeZone(date);
             // 汇总水量
-            Map<String, Object> productMap = hteCkProductMapper.getSumWaterMap(timeZone[0], timeZone[1]);
+//            Map<String, Object> productMap = hteCkProductMapper.getSumWaterMap(timeZone[0], timeZone[1]);
+            Map<String, Object> productMap = ckProductDealJobMapper.getSitenameProduct(timeZone[2]);
             // 药剂 汇总用量
             Map<String, Map<String, Object>> map = hteKcMaterialCkTzdMapper.getMaterialConsumptionBySite(timeZone[0], timeZone[1]);
-            // 循环处理 药剂用量
+            // 循环处理 计算药剂用量
             Map<String, Map<String, Object>> map1 = new HashMap<>();
             for (Map.Entry<String, Map<String, Object>> siteMaterialMap : map.entrySet()) {
                 String siteName = (String)siteMaterialMap.getValue().get("depart_name");
                 String material = (String) siteMaterialMap.getValue().get("material");
                 double slKg = (Double) siteMaterialMap.getValue().get("sl_kg");
                 material = materialZnToEn(material);
-                Map<String, Object> productDetail = (Map)productMap.get(siteName);
-                String sumWater = "0";
+                Map<String, String> productDetail = (Map)productMap.get(siteName);
+                double sumWater = 0;
                 if (productDetail != null) {
-                    sumWater = Double.toString((Double) productDetail.get("sl_t"));
+                    sumWater = Double.valueOf(productDetail.get("sl_t"));
                 }
                     Map<String, Object> insertDataMap = new HashMap<>();
                 if (!material.equals("0") ) { // && sumWater > 0
@@ -139,23 +147,52 @@ public class DataDealTest {
                 map3 = map2.getValue();
                 for (Map.Entry<String, Object> map4 : map3.entrySet()) {
                     Map<String,String> map5 = new HashMap<>();
-                    map5.put("key", map4.getKey());
-                    map5.put("value", map4.getValue().toString());
-                    list.add(map5);
-
+                    if (map4.getKey()!=null && map4.getValue()!=null){
+                        map5.put("key", map4.getKey());
+                        map5.put("value", map4.getValue().toString());
+                        list.add(map5);
+                    }
                 }
                 Map<String,Object> maps=new HashMap<String,Object>();
                 maps.put("list", list);
-                pertonconsumptionDealJobMapper.insertData(list);
-                System.out.println();
+                if (list.size() > 0) {
+                    pertonconsumptionDealJobMapper.deleteMedicamentUseData(timeZone[2], map2.getKey()); // 厂站——药剂——用量 删除
+                    pertonconsumptionDealJobMapper.insertData(list); // 厂站——药剂——用量 保存
+                }
+            }
+            // 厂站——药剂——吨耗 计算
+            List<String> siteList =  pertonconsumptionDealJobMapper.getSiteList(timeZone[2]);
+            if (siteList.size() > 0) {
+                for (String site : siteList) {
+                    pertonconsumptionDealJobMapper.deleteSitePertonconsumption(timeZone[2],site); // 删除历史数据
+                    pertonconsumptionDealJobMapper.saveSitePertonconsumption(timeZone[2],site); // 添加新数据
+                    pertonconsumptionDealJobMapper.updateSitePertonconsumptionNewColumn(timeZone[2],site); // 更新新液碱、重捕剂、硫酸
+                }
             }
             c.setTime(date);
             c.add(Calendar.MONTH, 1); // 月份加1
             date = c.getTime();
         }
+        // 汇总吨耗计算
+        List<Map<String, String>> list1 = pertonconsumptionDealJobMapper.calculatePertonconsumption();
+        pertonconsumptionDealJobMapper.truncatePertonconsumption(); // 清空吨耗表
+        for (int i = 0; i < list1.size();i ++) {
+            Map<String, String> consumption = list1.get(i);
+            List<Map<String, String>> list2 = new ArrayList<>();
+            for (Map.Entry<String, String> entry : consumption.entrySet()) {
+                Map<String, String> map5 = new HashMap<>();
+                map5.put("key", entry.getKey());
+                map5.put("value", entry.getValue());
+                list2.add(map5);
+            }
+            pertonconsumptionDealJobMapper.savePertonconsumption(list2); // 保存吨耗表
+        }
+        // 药剂吨耗 根据分类，二次统计
+        pertonconsumptionDealJobMapper.updateNewColumn();
+
     }
 
-    /**
+    /**r
      * @Description: 中文物料名称转变为英文
      * @Param:
      * @return:

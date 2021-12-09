@@ -10,22 +10,6 @@
         </foreach>
     </insert>
 
-    <select id="getCkProductAll" resultType="java.util.Map">
-		select a.`项目类型`, a.`日期`, a.`汇总水量`, a.`汇总泥量`,a.`产泥率（千分之一）`, round((a.`汇总水量`-b.`汇总水量`)/b.`汇总水量`, 4) as 水量_环比,
-		 round((a.`汇总水量`-c.`汇总水量`)/c.`汇总水量`, 4) as 水量_同比, round((a.`汇总泥量`-b.`汇总泥量`)/b.`汇总泥量`, 4) as 泥量_环比,
-		 round((a.`汇总泥量`-c.`汇总泥量`)/c.`汇总泥量`, 4) as 泥量_同比, round((a.`产泥率（千分之一）`-b.`产泥率（千分之一）`)/b.`产泥率（千分之一）`, 4) as 产泥率_环比,
-		 round((a.`产泥率（千分之一）`-c.`产泥率（千分之一）`)/c.`产泥率（千分之一）`, 4) as 产泥率_同比
-from
-(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
-where ck_year_month=#{static_month}) a
-left join
-(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
-where ck_year_month=date_sub(#{static_month}, interval 1 month)) b on 1=1
-left join
-(SELECT "所有项目" as 项目类型, ck_year_month as 日期, round(sum(sum_water), 2) as 汇总水量, round(sum(sum_sludge), 2) as 汇总泥量, round(sum(sum_sludge)/sum(sum_water)*1000, 4) as 产泥率（千分之一） FROM `sitename_product_month`
-where ck_year_month=date_sub(#{static_month}, interval 1 year)) c  on 1=1
-	</select>
-
     <delete id="batchDelete">
         delete from sitename_product_month where ck_year_month = #{ckYearMonth}
     </delete>
@@ -196,6 +180,81 @@ FROM
 
     <select id="getCkProductGeneralByProjectType" resultType="java.util.Map">
 		select * from test_ckproduct_general where project_type = #{projectType} and static_year_month = #{staticYearMonth}
+	</select>
+
+	<select id="getSiteList" resultType="java.lang.String">
+		SELECT DISTINCT sitename FROM `sitename_product_month` WHERE ck_year_month = #{staticYearMonth}
+	</select>
+
+	<update id="updateSiteCkProductGeneral">
+		update sitename_product_month e,
+(SELECT
+	a.`sitename`,
+	a.`ck_year_month` ,
+	YEAR ( a.`ck_year_month` ) AS static_year,
+	MONTH ( a.`ck_year_month` ) AS static_month,
+	a.`sum_water`,
+	a.`sum_sludge`,
+	a.`sludge_rate`,
+	(case when b.`sum_water` != 0 then round(( a.`sum_water` - b.`sum_water` )/ b.`sum_water`, 4 ) else 0 end) AS water_huanbi,
+	(case when c.`sum_water` != 0 then round(( a.`sum_water` - c.`sum_water` )/ c.`sum_water`, 4 ) else 0 end) AS water_tongbi,
+	(case when b.`sum_sludge` != 0 then round(( a.`sum_sludge` - b.`sum_sludge` )/ b.`sum_sludge`, 4 ) else 0 end) AS sludge_huanbi,
+	(case when c.`sum_sludge` != 0 then round(( a.`sum_sludge` - c.`sum_sludge` )/ c.`sum_sludge`, 4 ) else 0 end) AS sludge_tongbi,
+	(case when b.`sludge_rate` != 0 then round(( a.`sludge_rate` - b.`sludge_rate` )/ b.`sludge_rate`, 4 ) else 0 end) AS rate_huanbi,
+	(case when c.`sludge_rate` != 0 then round(( a.`sludge_rate` - c.`sludge_rate` )/ c.`sludge_rate`, 4 ) else 0 end) AS rate_tongbi
+FROM
+	(
+	SELECT
+		sitename,
+		ck_year_month,
+		round( sum_water, 2 ) AS sum_water,
+		round( sum_sludge, 2 ) AS sum_sludge,
+		(case when sum_water != 0 then round( sum_sludge/ sum_water* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = #{staticYearMonth}
+		AND sitename = #{sitename}
+	) a
+	left join
+ (
+ SELECT
+		sitename,
+		ck_year_month,
+		round( sum_water, 2 ) AS sum_water,
+		round( sum_sludge, 2 ) AS sum_sludge,
+		(case when sum_water != 0 then round( sum_sludge/ sum_water* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{staticYearMonth}, INTERVAL 1 MONTH )
+		AND sitename = #{sitename}) b on 1=1
+		left join
+(
+	SELECT
+		sitename,
+		ck_year_month,
+		round( sum_water, 2 ) AS sum_water,
+		round( sum_sludge, 2 ) AS sum_sludge,
+		(case when sum_water != 0 then round( sum_sludge/ sum_water* 1000, 4 ) else 0 end) AS sludge_rate
+	FROM
+		`sitename_product_month`
+	WHERE
+		ck_year_month = date_sub( #{staticYearMonth}, INTERVAL 1 YEAR )
+		AND sitename = #{sitename}) c on 1=1) d
+		set e.sludge_rate = d.sludge_rate,
+		e.static_year = d.static_year,
+		e.static_month = d.static_month,
+		e.water_huanbi = d.water_huanbi, e.water_tongbi = d.water_tongbi,
+		e.sludge_huanbi = d.sludge_huanbi, e.sludge_tongbi = d.sludge_tongbi,
+		e.rate_huanbi = d.rate_huanbi, e.rate_tongbi = d.rate_tongbi
+		where e.sitename = d.sitename and e.ck_year_month = d.ck_year_month
+	</update>
+
+	<select id="getSitenameProduct" resultType="java.util.Map" >
+		select sitename, sum_water as sl_t
+		from `sitename_product_month`
+		where ck_year_month = #{staticYearMonth}
 	</select>
 
 

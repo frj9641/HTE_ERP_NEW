@@ -157,6 +157,11 @@ public class HteCkProduct implements Serializable {
     @Excel(name = "创建人", width = 15)
     @ApiModelProperty(value = "创建人")
     private java.lang.String collectPoint;
+    /**
+     * 汇总计算类型：产出品_水量， 调整单_水量
+     */
+    @ApiModelProperty(value = "汇总计算类型")
+    private java.lang.String unionType;
 
 
 }
