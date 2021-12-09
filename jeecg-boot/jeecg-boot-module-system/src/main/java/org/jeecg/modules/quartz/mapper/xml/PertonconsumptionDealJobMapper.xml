@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper">
 
+	<delete id="deleteMedicamentUseData">
+		delete from medicament_use_data where static_year_month = #{staticYearMonth} and sitename = #{sitename}
+	</delete>
+
 	<insert id="insertData" parameterType="java.util.ArrayList">
 		insert into medicament_use_data
 		(<foreach collection="list" item="item" index="index" separator=",">${item.key}</foreach>)
@@ -12,5 +16,197 @@
 		</foreach>
 		)
 	</insert>
+
+	<select id="calculatePertonconsumption" resultType="java.util.Map">
+		SELECT
+	static_year_month,
+	YEAR ( static_year_month ) AS static_year,
+	MONTH ( static_year_month ) AS static_month,
+	round(( sum( shihui ) / round( sum( sum_water ), 4 )), 4 ) AS shihui,
+	round(( sum( cina ) / round( sum( sum_water ), 4 )), 4 ) AS cina,
+	round(( sum( yanghuaji ) / round( sum( sum_water ), 4 )), 4 ) AS yanghuaji,
+	round(( sum( jiaona ) / round( sum( sum_water ), 4 )), 4 ) AS jiaona,
+	round(( sum( liusuan ) / round( sum( sum_water ), 4 )), 4 ) AS liusuan,
+	round(( sum( xi_liusuan ) / round( sum( sum_water ), 4 )), 4 ) AS xi_liusuan,
+	round(( sum( liuhuana ) / round( sum( sum_water ), 4 )), 4 ) AS liuhuana,
+	round(( sum( nong_liusuan ) / round( sum( sum_water ), 4 )), 4 ) AS nong_liusuan,
+	round(( sum( yansuan ) / round( sum( sum_water ), 4 )), 4 ) AS yansuan,
+	round(( sum( yejian ) / round( sum( sum_water ), 4 )), 4 ) AS yejian,
+	round(( sum( chunjian ) / round( sum( sum_water ), 4 )), 4 ) AS chunjian,
+	round(( sum( NaOH ) / round( sum( sum_water ), 4 )), 4 ) AS NaOH,
+	round(( sum( pianjian ) / round( sum( sum_water ), 4 )), 4 ) AS pianjian,
+	round(( sum( PAC ) / round( sum( sum_water ), 4 )), 4 ) AS PAC,
+	round(( sum( PAM ) / round( sum( sum_water ), 4 )), 4 ) AS PAM,
+	round(( sum( yanglizixuningji ) / round( sum( sum_water ), 4 )), 4 ) AS yanglizixuningji,
+	round(( sum( xiaopaoji ) / round( sum( sum_water ), 4 )), 4 ) AS xiaopaoji,
+	round(( sum( lvhuagai ) / round( sum( sum_water ), 4 )), 4 ) AS lvhuagai,
+	round(( sum( huoxingtan ) / round( sum( sum_water ), 4 )), 4 ) AS huoxingtan,
+	round(( sum( linsuanerqingjia ) / round( sum( sum_water ), 4 )), 4 ) AS linsuanerqingjia,
+	round(( sum( lvhuayatie ) / round( sum( sum_water ), 4 )), 4 ) AS lvhuayatie,
+	round(( sum( liusuanyatie ) / round( sum( sum_water ), 4 )), 4 ) AS liusuanyatie,
+	round(( sum( putaotang ) / round( sum( sum_water ), 4 )), 4 ) AS putaotang,
+	round(( sum( shengwumei ) / round( sum( sum_water ), 4 )), 4 ) AS shengwumei,
+	round(( sum( beizeng_shengwuhuoxingtan ) / round( sum( sum_water ), 4 )), 4 ) AS beizeng_shengwuhuoxingtan,
+	round(( sum( zhongbuji ) / round( sum( sum_water ), 4 )), 4 ) AS zhongbuji,
+	round(( sum( yisuanna ) / round( sum( sum_water ), 4 )), 4 ) AS yisuanna,
+	round(( sum( chunieji ) / round( sum( sum_water ), 4 )), 4 ) AS chunieji,
+	round(( sum( ningmengsuan ) / round( sum( sum_water ), 4 )), 4 ) AS ningmengsuan,
+	round(( sum( chulinji ) / round( sum( sum_water ), 4 )), 4 ) AS chulinji,
+	round(( sum( niaosu ) / round( sum( sum_water ), 4 )), 4 ) AS niaosu,
+	round(( sum( tansuanqinna ) / round( sum( sum_water ), 4 )), 4 ) AS tansuanqinna,
+	round(( sum( juheliusuantie ) / round( sum( sum_water ), 4 )), 4 ) AS juheliusuantie,
+	round(( sum( dundai ) / round( sum( sum_water ), 4 )), 4 ) AS dundai,
+	round(( sum( poruji ) / round( sum( sum_water ), 4 )), 4 ) AS poruji,
+	round(( sum( yaxiaosuanna ) / round( sum( sum_water ), 4 )), 4 ) AS yaxiaosuanna,
+	round(( sum( gongyeyan ) / round( sum( sum_water ), 4 )), 4 ) AS gongyeyan,
+	round(( sum( yongdian ) / round( sum( sum_water ), 4 )), 4 ) AS yongdian,
+	round(( sum( zilaishui ) / round( sum( sum_water ), 4 )), 4 ) AS zilaishui,
+	round(( sum( shengwuhuoxingtanyuan ) / round( sum( sum_water ), 4 )), 4 ) AS shengwuhuoxingtanyuan,
+	round( sum( sum_water ), 4 ) AS sum_water,
+	round( sum( sum_sludge ), 4 ) AS sum_sludge
+FROM
+	medicament_use_data
+GROUP BY
+	static_year_month
+	</select>
+
+	<insert id="savePertonconsumption" parameterType="java.util.ArrayList">
+		insert into medicament_perton_consumption_general
+		(<foreach collection="list" item="item" index="index" separator=",">${item.key}</foreach>)
+		values
+		(
+		<foreach collection="list" item="subitem" index="index" separator=",">
+			#{subitem.value}
+		</foreach>
+		)
+	</insert>
+
+	<delete id="truncatePertonconsumption">
+		truncate table medicament_perton_consumption_general
+	</delete>
+
+	<update id="updateNewColumn">
+		update medicament_perton_consumption_general set
+		new_yejian = yejian+(3.3*pianjian),
+		new_zhongbuji = zhongbuji + chunieji,
+		new_liusuan = liusuan + NaOH
+	</update>
+
+	<insert id="saveSitePertonconsumption">
+		insert into sitename_medicament_perton_consumption_general(sitename,
+	static_year_month,
+	static_year,
+	static_month,
+	shihui,
+  cina,
+	yanghuaji,
+	jiaona,
+	liusuan,
+	xi_liusuan,
+	liuhuana,
+	nong_liusuan,
+	yansuan,
+	yejian,
+	chunjian,
+	NaOH,
+	pianjian,
+	PAC,
+	PAM,
+	yanglizixuningji,
+	xiaopaoji,
+	lvhuagai,
+	huoxingtan,
+	linsuanerqingjia,
+	lvhuayatie,
+	liusuanyatie,
+	putaotang,
+	shengwumei,
+	beizeng_shengwuhuoxingtan,
+	zhongbuji,
+	yisuanna,
+	chunieji,
+	ningmengsuan,
+	chulinji,
+	niaosu,
+	tansuanqinna,
+	juheliusuantie,
+	dundai,
+	poruji,
+	yaxiaosuanna,
+	gongyeyan,
+	yongdian,
+	zilaishui,
+	shengwuhuoxingtanyuan,
+	sum_water,
+	sum_sludge)
+SELECT
+  sitename,
+	static_year_month,
+	YEAR ( static_year_month ) AS static_year,
+	MONTH ( static_year_month ) AS static_month,
+	case when sum_water != 0 then round(shihui / round(sum_water, 4 ), 4 ) else 0 end AS shihui,
+	case when sum_water != 0 then round(cina / round(sum_water, 4 ), 4 ) else 0 end AS cina,
+	case when sum_water != 0 then round(yanghuaji / round(sum_water, 4 ), 4 ) else 0 end AS yanghuaji,
+	case when sum_water != 0 then round(jiaona / round(sum_water, 4 ), 4 ) else 0 end AS jiaona,
+	case when sum_water != 0 then round(liusuan / round(sum_water, 4 ), 4 ) else 0 end AS liusuan,
+	case when sum_water != 0 then round(xi_liusuan / round(sum_water, 4 ), 4 ) else 0 end AS xi_liusuan,
+	case when sum_water != 0 then round(liuhuana / round(sum_water, 4 ), 4 ) else 0 end AS liuhuana,
+	case when sum_water != 0 then round(nong_liusuan / round(sum_water, 4 ), 4 ) else 0 end AS nong_liusuan,
+	case when sum_water != 0 then round(yansuan / round(sum_water, 4 ), 4 ) else 0 end AS yansuan,
+	case when sum_water != 0 then round(yejian / round(sum_water, 4 ), 4 ) else 0 end AS yejian,
+	case when sum_water != 0 then round(chunjian / round(sum_water, 4 ), 4 ) else 0 end AS chunjian,
+	case when sum_water != 0 then round(NaOH / round(sum_water, 4 ), 4 ) else 0 end AS NaOH,
+	case when sum_water != 0 then round(pianjian / round(sum_water, 4 ), 4 ) else 0 end AS pianjian,
+	case when sum_water != 0 then round(PAC / round(sum_water, 4 ), 4 ) else 0 end AS PAC,
+	case when sum_water != 0 then round(PAM / round(sum_water, 4 ), 4 ) else 0 end AS PAM,
+	case when sum_water != 0 then round(yanglizixuningji / round(sum_water, 4 ), 4 ) else 0 end AS yanglizixuningji,
+	case when sum_water != 0 then round(xiaopaoji / round(sum_water, 4 ), 4 ) else 0 end AS xiaopaoji,
+	case when sum_water != 0 then round(lvhuagai / round(sum_water, 4 ), 4 ) else 0 end AS lvhuagai,
+	case when sum_water != 0 then round(huoxingtan / round(sum_water, 4 ), 4 ) else 0 end AS huoxingtan,
+	case when sum_water != 0 then round(linsuanerqingjia / round(sum_water, 4 ), 4 ) else 0 end AS linsuanerqingjia,
+	case when sum_water != 0 then round(lvhuayatie / round(sum_water, 4 ), 4 ) else 0 end AS lvhuayatie,
+	case when sum_water != 0 then round(liusuanyatie / round(sum_water, 4 ), 4 ) else 0 end AS liusuanyatie,
+	case when sum_water != 0 then round(putaotang / round(sum_water, 4 ), 4 ) else 0 end AS putaotang,
+	case when sum_water != 0 then round(shengwumei / round(sum_water, 4 ), 4 ) else 0 end AS shengwumei,
+	case when sum_water != 0 then round(beizeng_shengwuhuoxingtan / round(sum_water, 4 ), 4 ) else 0 end AS beizeng_shengwuhuoxingtan,
+	case when sum_water != 0 then round(zhongbuji / round(sum_water, 4 ), 4 ) else 0 end AS zhongbuji,
+	case when sum_water != 0 then round(yisuanna / round(sum_water, 4 ), 4 ) else 0 end AS yisuanna,
+	case when sum_water != 0 then round(chunieji / round(sum_water, 4 ), 4 ) else 0 end AS chunieji,
+	case when sum_water != 0 then round(ningmengsuan / round(sum_water, 4 ), 4 ) else 0 end AS ningmengsuan,
+	case when sum_water != 0 then round(chulinji / round(sum_water, 4 ), 4 ) else 0 end AS chulinji,
+	case when sum_water != 0 then round(niaosu / round(sum_water, 4 ), 4 ) else 0 end AS niaosu,
+	case when sum_water != 0 then round(tansuanqinna / round(sum_water, 4 ), 4 ) else 0 end AS tansuanqinna,
+	case when sum_water != 0 then round(juheliusuantie / round(sum_water, 4 ), 4 ) else 0 end AS juheliusuantie,
+	case when sum_water != 0 then round(dundai / round(sum_water, 4 ), 4 ) else 0 end AS dundai,
+	case when sum_water != 0 then round(poruji / round(sum_water, 4 ), 4 ) else 0 end AS poruji,
+	case when sum_water != 0 then round(yaxiaosuanna / round(sum_water, 4 ), 4 ) else 0 end AS yaxiaosuanna,
+	case when sum_water != 0 then round(gongyeyan / round(sum_water, 4 ), 4 ) else 0 end AS gongyeyan,
+	case when sum_water != 0 then round(yongdian / round(sum_water, 4 ), 4 ) else 0 end AS yongdian,
+	case when sum_water != 0 then round(zilaishui / round(sum_water, 4 ), 4 ) else 0 end AS zilaishui,
+	case when sum_water != 0 then round(shengwuhuoxingtanyuan / round(sum_water, 4 ), 4 ) else 0 end AS shengwuhuoxingtanyuan,
+	round(sum_water , 4 ) AS sum_water,
+	round(sum_sludge , 4 ) AS sum_sludge
+FROM
+	medicament_use_data
+ where sitename=#{sitename} and static_year_month=#{staticYearMonth}
+	</insert>
+
+	<select id="getSiteList" resultType="java.lang.String">
+		SELECT DISTINCT sitename FROM medicament_use_data WHERE static_year_month = #{staticYearMonth}
+	</select>
+
+	<delete id="deleteSitePertonconsumption">
+		delete from sitename_medicament_perton_consumption_general where static_year_month = #{staticYearMonth} and
+		 sitename = #{sitename}
+	</delete>
+
+	<update id="updateSitePertonconsumptionNewColumn">
+		update sitename_medicament_perton_consumption_general set
+		new_yejian = yejian+(3.3*pianjian),
+		new_zhongbuji = zhongbuji + chunieji,
+		new_liusuan = liusuan + NaOH
+		where static_year_month = #{staticYearMonth} and
+		 sitename = #{sitename}
+	</update>
 
 </mapper>

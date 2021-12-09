@@ -21,4 +21,13 @@ public interface CommonMapper {
      * @param list
      */
     void insertRkQC(List<Map<String, String>> list);
+
+    /**
+     * @Description: 产出品导入
+     * @Param: [list]
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/1 15:20
+    **/
+    void insertCkProduct(List<Map<String, String>> list);
 }

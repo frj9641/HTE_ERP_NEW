@@ -39,9 +39,6 @@ public interface CkProductDealJobMapper extends BaseMapper<CkProduct> {
 	**/
 	void saveCkProduct(@Param("list") List<CkProduct> list);
 
-	@MapKey("id")
-	List<Map<String, String>> getCkProductAll(@Param("static_month") String static_month);
-
 	/**
 	 * @Description: 删除已经保存的当月产出品汇总数据（电镀、非电镀、所有项目 @ 水量、泥量、产泥率、各同比环比）
 	 * @Param: [ckYearMonth]
@@ -62,5 +59,27 @@ public interface CkProductDealJobMapper extends BaseMapper<CkProduct> {
 
 	@MapKey("project_type")
 	Map<String, Map<String, String>> getCkProductGeneralByProjectType(@Param("projectType") String projectType, @Param("staticYearMonth") String staticYearMonth);
+
+
+	/**
+	 * @Description: 汇总月份 厂站名称列表
+	 * @Param: [staticYearMonth]
+	 * @return: java.util.List<java.lang.String>
+	 * @Author: lpf
+	 * @Date: 2021/12/1 17:30
+	**/
+	List<String> getSiteList( @Param("staticYearMonth") String staticYearMonth);
+
+	/**
+	 * @Description: 修改 厂站的水、泥、产泥率  同比环比
+	 * @Param: [projectType, staticYearMonth]
+	 * @return: void
+	 * @Author: lpf
+	 * @Date: 2021/12/1 17:11
+	**/
+	void updateSiteCkProductGeneral(@Param("sitename") String sitename, @Param("staticYearMonth") String staticYearMonth);
+
+	@MapKey("sitename")
+	Map<String,Object> getSitenameProduct(@Param("staticYearMonth") String staticYearMonth);
 
 }

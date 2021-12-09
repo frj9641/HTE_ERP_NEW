@@ -50,7 +50,71 @@ WHERE
 	group by b.depart_name, c.product_name, d.collect_point
     </select>
 
+	<select id="getNewProductList" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct">
+		select result.* from
+-- no_paifangkou——产出品单——水量汇总
+(SELECT b.depart_name, "非排放口" as collect_point, "产出品_水量" as union_type, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=0 and d.type=0 and (collect_point!="排放口" or collect_point is null) and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type
+
+union all
+
+-- 排放口——产出品单——水量汇总
+SELECT b.depart_name, "排放口" as collect_point, "产出品_水量" as union_type, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=0 and d.type=0 and collect_point="排放口" and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type
 
 
+union all
+
+-- 调整单——水量汇总
+SELECT b.depart_name, "调整单" as collect_point,"调整单_水量" as union_type, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=1 and d.type=0 and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type) result
+ORDER BY depart_name
+	</select>
+
+	<select id="getMaxCkProductWater" resultType="java.util.Map">
+select depart_name, max(sl_t) as sl_t from
+-- 非排放口——产出品单——水量汇总
+(SELECT b.depart_name, "非排放口" as collect_point, "产出品_水量" as union_type, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=0 and d.type=0 and (collect_point!="排放口" or collect_point is null) and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type
+
+union all
+
+-- 排放口——产出品单——水量汇总
+SELECT b.depart_name, "排放口" as collect_point, "产出品_水量" as union_type, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=0 and d.type=0 and collect_point="排放口" and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type
+ORDER BY depart_name
+) result
+GROUP BY depart_name
+	</select>
+
+	<select id="getSumCkProductTzWater" resultType="java.util.Map">
+		SELECT b.depart_name, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and ck_produce_type=1 and d.type=0 and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name,d.type
+
+	</select>
 
 </mapper>
