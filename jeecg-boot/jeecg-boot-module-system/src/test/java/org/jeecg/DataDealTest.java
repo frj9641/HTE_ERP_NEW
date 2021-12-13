@@ -4,6 +4,7 @@ import com.google.gson.internal.$Gson$Preconditions;
 import org.apache.poi.hpsf.Decimal;
 import org.checkerframework.checker.units.qual.A;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.modules.demo.ckproduct.entity.HteCkProduct;
 import org.jeecg.modules.demo.ckproduct.mapper.HteCkProductMapper;
 import org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd;
 import org.jeecg.modules.demo.materialcktzd.mapper.HteKcMaterialCkTzdMapper;
@@ -85,6 +86,123 @@ public class DataDealTest {
             date = c.getTime();
         }
     }
+
+    /**
+     * @Description: 汇总各厂站各股水的汇总水量、汇总各厂站各种泥量的汇总数据
+     * @Param: []
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/10 9:22
+    **/
+    @Test
+    public void batchSaveSiteCollectPointCkProduct() throws ParseException {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date beginDate = dateFormat1.parse("2018-08-01");
+        Date endDate = dateFormat1.parse("2021-11-01");
+        Date date = beginDate;
+        while (!date.equals(endDate)) {
+            String[] timeZone = ckProductDealJob.getTimeZone(date);
+            List<HteCkProduct> siteCollectPointWater = hteCkProductMapper.getSiteCollectPointWater(timeZone[2],timeZone[0],timeZone[1]);
+            List<HteCkProduct> siteCollectPointSludge = hteCkProductMapper.getSiteCollectPointSludge(timeZone[2],timeZone[0],timeZone[1]);
+            // sitename_collect_point_product_month: 删除当月已有汇总数据
+            ckProductDealJobMapper.batchDeleteSiteCollectPointWater(timeZone[2]);
+            // sitename_collect_point_product_month: 保存最新的汇总数据
+            if (siteCollectPointWater.size() > 0) {
+                ckProductDealJobMapper.saveSiteCollectPointWater(siteCollectPointWater);
+            }
+            if (siteCollectPointSludge.size() > 0) {
+                ckProductDealJobMapper.saveSiteCollectPointSludge(siteCollectPointSludge);
+            }
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1); // 月份加1天
+            date = c.getTime();
+        }
+    }
+
+    /**
+     * @Description: 计算并保存污泥品位
+     * @Param: []
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/13 9:13
+    **/
+    @Test
+    public void saveSludgeGrade () throws ParseException {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date beginDate = dateFormat1.parse("2018-08-01");
+        Date endDate = dateFormat1.parse("2021-11-01");
+        Date date = beginDate;
+        while (!date.equals(endDate)) {
+            String[] timeZone = ckProductDealJob.getTimeZone(date);
+            List<HteCkProduct> sludgeGradeList = hteCkProductMapper.getSludgeGrade(timeZone[0], timeZone[1]); // 镍干基、铬干基、铜干基
+            List<HteCkProduct> sludgeMousitureList = hteCkProductMapper.getSludgeMoisture(timeZone[0], timeZone[1]); // 含水率
+            // <parentId, <test_index, HteCkProduct>>
+            // 先遍历 含水率List
+            // 再遍历 镍干基、铬干基、铜干基List,计算slT*(1-含水率/100)*(镍干基、铬干基、铜干基)
+            Map<String, Map<String, HteCkProduct>> detailMap = new HashMap<>();
+            for (HteCkProduct mod : sludgeMousitureList) { // 先遍历 含水率List
+                Map<String, HteCkProduct> subMap1 = new HashMap<>();
+                String parentId = mod.getParentId();
+                String testIndex = mod.getTestIndex();
+                if (detailMap.containsKey(parentId)) {
+                    subMap1 = detailMap.get(parentId);
+                }
+                subMap1.put(testIndex, mod);
+                HteCkProduct sludgeMod = new HteCkProduct();
+                sludgeMod.setDepartName(mod.getDepartName());
+                sludgeMod.setProductName(mod.getProductName());
+                sludgeMod.setTestValue(mod.getSlT().toString());
+                sludgeMod.setTestIndex("泥量");
+                sludgeMod.setTzDate(mod.getTzDate());
+                subMap1.put("泥量", sludgeMod);
+                detailMap.put(parentId, subMap1);
+            }
+            for (HteCkProduct mod : sludgeGradeList) { // 再遍历 镍干基、铬干基、铜干基List,计算slT*(1-含水率/100)*(镍干基、铬干基、铜干基)
+                Map<String, HteCkProduct> subMap2 = new HashMap<>();
+                String parentId = mod.getParentId();
+                String testIndex = mod.getTestIndex();
+                Double testValue = Double.valueOf(mod.getTestValue());
+                Double moisture = 0.00;
+                Double slT = 0.00;
+                if (detailMap.containsKey(parentId)) {
+                    subMap2 = detailMap.get(parentId);
+                    moisture = Double.valueOf(subMap2.get("含水率").getTestValue()); // get 含水率
+                    slT = Double.valueOf(subMap2.get("含水率").getSlT()); // get 泥量
+                }
+                testValue = slT*(1-moisture/100)*testValue/100; // 计算品位
+                mod.setTestValue(testValue.toString());
+                subMap2.put(testIndex, mod);
+                detailMap.put(parentId, subMap2);
+            }
+
+            // 遍历detailMap,保存每条parentId的品位数据
+            List<HteCkProduct> sludgeGradeList2 = new ArrayList<HteCkProduct>();
+            Iterator<Map.Entry<String, Map<String, HteCkProduct>>> it = detailMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Map<String, HteCkProduct>> entry = it.next();
+                Map<String, HteCkProduct> sludgeGradeMap = entry.getValue();
+                Iterator<Map.Entry<String, HteCkProduct>> it2 = sludgeGradeMap.entrySet().iterator();
+                String output = "";
+                while (it2.hasNext()) {
+                    Map.Entry<String, HteCkProduct> entry2 = it2.next();
+                    output = output + "&&&&" + entry2.getValue().getDepartName() + "-" +entry2.getValue().getProductName() + "-" +entry2.getValue().getTestIndex() + "-" +entry2.getValue().getTestValue() + "-" + entry2.getValue().getTzDate();
+                    sludgeGradeList2.add(entry2.getValue());
+                }
+                System.out.println(output);
+            }
+            ckProductDealJobMapper.batchDeleteSludgeGradeDetail(timeZone[2]); // 删除
+            ckProductDealJobMapper.saveSludgeGradeDetail(sludgeGradeList2, timeZone[2]); //插入
+            // 保存月汇总数据
+            ckProductDealJobMapper.batchDeleteSludgeGradeGeneral(timeZone[2]); // 删除
+            ckProductDealJobMapper.saveSludgeGradeGeneral(timeZone[2]); //插入
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1); // 月份加1天
+            date = c.getTime();
+        }
+    }
+
 
     /**
      * @Description: 保存jeecg-boot中的药剂使用数据 至 medicament_use_data

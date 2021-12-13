@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
+import org.jeecg.modules.demo.ckproduct.entity.HteCkProduct;
 import org.jeecg.modules.quartz.entity.CkProduct;
 import org.jeecg.modules.quartz.entity.QuartzJob;
 import org.springframework.stereotype.Component;
@@ -82,4 +83,17 @@ public interface CkProductDealJobMapper extends BaseMapper<CkProduct> {
 	@MapKey("sitename")
 	Map<String,Object> getSitenameProduct(@Param("staticYearMonth") String staticYearMonth);
 
+	void batchDeleteSiteCollectPointWater(@Param("staticYearMonth") String staticYearMonth);
+
+	void saveSiteCollectPointWater(@Param("list") List<HteCkProduct> list);
+
+	void saveSiteCollectPointSludge(@Param("list") List<HteCkProduct> list);
+
+	void saveSludgeGradeDetail(@Param("list") List<HteCkProduct> list, @Param("staticYearMonth") String staticYearMonth);
+
+	void batchDeleteSludgeGradeDetail(@Param("staticYearMonth") String staticYearMonth);
+
+	void saveSludgeGradeGeneral(@Param("staticYearMonth") String staticYearMonth);
+
+	void batchDeleteSludgeGradeGeneral(@Param("staticYearMonth") String staticYearMonth);
 }

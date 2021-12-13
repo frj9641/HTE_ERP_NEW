@@ -146,22 +146,67 @@ public class HteCkProduct implements Serializable {
     @ApiModelProperty(value = "厂站名称")
     private java.lang.String departName;
     /**
-     * 创建人
+     * 产出品名称
      */
-    @Excel(name = "创建人", width = 15)
-    @ApiModelProperty(value = "创建人")
+    @Excel(name = "产出品名称", width = 15)
+    @ApiModelProperty(value = "产出品名称")
     private java.lang.String productName;
     /**
-     * 创建人
+     * 采样口
      */
-    @Excel(name = "创建人", width = 15)
-    @ApiModelProperty(value = "创建人")
+    @Excel(name = "采样口", width = 15)
+    @ApiModelProperty(value = "采样口")
     private java.lang.String collectPoint;
     /**
      * 汇总计算类型：产出品_水量， 调整单_水量
      */
     @ApiModelProperty(value = "汇总计算类型")
     private java.lang.String unionType;
+    /**
+     * 采样口类型
+     */
+    @Excel(name = "采样口", width = 15)
+    @ApiModelProperty(value = "采样口类型")
+    private java.lang.String pointTypeId;
+    /**
+     * 汇总计算统计年月
+     */
+    @Excel(name = "统计年月", width = 15)
+    @ApiModelProperty(value = "统计年月")
+    private java.lang.String staticYearMonth;
+    /**
+     * 汇总计算统计年月
+     */
+    @Excel(name = "统计年", width = 15)
+    @ApiModelProperty(value = "统计年")
+    private java.lang.String staticYear;
+    /**
+     * 汇总计算统计年月
+     */
+    @Excel(name = "统计月", width = 15)
+    @ApiModelProperty(value = "统计月")
+    private java.lang.String staticMonth;
+
+    /**
+     * 产出品质量数据采集主表id
+     */
+    @Excel(name = "产出品质量数据采集主表id", width = 15)
+    @ApiModelProperty(value = "产出品质量数据采集主表id")
+    private java.lang.String parentId;
+
+    /**
+     * 产出品质量数据采集附表指标名称
+     */
+    @Excel(name = "产出品质量数据采集附表指标名称", width = 15)
+    @ApiModelProperty(value = "产出品质量数据采集附表指标名称")
+    private java.lang.String testIndex;
+
+    /**
+     * 产出品质量数据采集附表指标值
+     */
+    @Excel(name = "产出品质量数据采集附表指标值", width = 15)
+    @ApiModelProperty(value = "产出品质量数据采集附表指标值")
+    private java.lang.String testValue;
 
 
 }

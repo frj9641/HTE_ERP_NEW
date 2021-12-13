@@ -30,4 +30,14 @@ public interface HteCkProductMapper extends BaseMapper<HteCkProduct> {
 
     @MapKey("depart_name")
     Map<String,Map<String, Object>> getSumCkProductTzWater(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    List<HteCkProduct> getSiteCollectPointWater(@Param("staticYearMonth") String staticYearMonth, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    List<HteCkProduct> getSiteCollectPointSludge(@Param("staticYearMonth") String staticYearMonth, @Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+//    @MapKey("description")
+    List<HteCkProduct>  getSludgeGrade(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+//    @MapKey("description")
+    List<HteCkProduct>  getSludgeMoisture(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 }
