@@ -52,8 +52,9 @@ public class ExcelWorker {
             // 数量达到指定或者遍历到最后一行则进行batch插入
             if (list.size() == 2 || row.getRowNum() == xssfSheet.getLastRowNum()) {
 //                commonMapper.insertRkQC(list);
-                commonMapper.insertCkProduct(list);
-                list.clear();
+//                commonMapper.insertCkProduct(list);
+                commonMapper.insertExcel(list);
+            list.clear();
             }
         }
 

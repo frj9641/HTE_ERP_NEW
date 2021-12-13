@@ -257,5 +257,48 @@ FROM
 		where ck_year_month = #{staticYearMonth}
 	</select>
 
+	<delete id="batchDeleteSiteCollectPointWater">
+        delete from sitename_collect_point_product_month where static_year_month = #{staticYearMonth}
+    </delete>
+
+	<insert id="saveSiteCollectPointWater">
+		insert into sitename_collect_point_product_month (sitename, static_year_month,static_year, static_month, collect_point, point_type_id, sl_t,product_name, product_type,create_time)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.departName},#{item.staticYearMonth},#{item.staticYear},#{item.staticMonth},#{item.collectPoint},#{item.pointTypeId},#{item.slT},#{item.productName},"水",now())
+		</foreach>
+	</insert>
+
+	<insert id="saveSiteCollectPointSludge">
+		insert into sitename_collect_point_product_month (sitename, static_year_month,static_year, static_month, sl_t,product_name, product_type,create_time)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.departName},#{item.staticYearMonth},#{item.staticYear},#{item.staticMonth},#{item.slT},#{item.productName},"泥",now())
+		</foreach>
+	</insert>
+
+	<insert id="saveSludgeGradeDetail">
+		insert into sitename_sludge_grade_detail (sitename, static_year_month,static_year, static_month, tz_date,product_name, test_index,test_value)
+		values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.departName},#{staticYearMonth},year(#{staticYearMonth}),month(#{staticYearMonth}),#{item.tzDate},#{item.productName},#{item.testIndex},#{item.testValue})
+		</foreach>
+	</insert>
+
+	<delete id="batchDeleteSludgeGradeDetail">
+		delete from sitename_sludge_grade_detail where static_year_month=#{staticYearMonth}
+	</delete>
+
+	<insert id="saveSludgeGradeGeneral">
+		insert into sitename_sludge_grade_general(sitename, static_year_month, static_year,static_month, product_name, test_index, test_value)
+SELECT sitename, static_year_month, static_year,static_month, product_name, test_index, round(sum(test_value), 2) as test_value FROM `sitename_sludge_grade_detail`
+where product_name like '%泥%' and test_index!="含水率" and static_year_month=#{staticYearMonth}
+GROUP BY sitename, static_year_month, static_year,static_month, product_name, test_index
+	</insert>
+
+	<delete id="batchDeleteSludgeGradeGeneral">
+		delete from sitename_sludge_grade_general where static_year_month=#{staticYearMonth}
+	</delete>
+
 
 </mapper>

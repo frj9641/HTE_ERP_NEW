@@ -21,17 +21,16 @@ WHERE
     <select id="getSumSludge" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct" >
 		SELECT
 	b.depart_name,
-	c.product_name, d.collect_point, sum(a.sl_t) as sl_t
+	"泥量" as product_name, sum(a.sl_t) as sl_t
 FROM
 	`hte_ck_product` a
 left join sys_depart b on b.org_code = a.site_id
 left join hte_product c on c.id = a.product_id
 left join hte_collect_point d on d.id = a.collect_id
 WHERE
-	a.check_flag = 2 and
+	a.check_flag = 2 and c.type=1 and
 	date(a.tz_date) between #{fromDate} and #{toDate}
-	and product_name='总泥量'
-	group by b.depart_name, c.product_name, d.collect_point
+	group by b.depart_name
 	</select>
 
 	<select id="getSumWaterMap" resultType="java.util.Map" >
@@ -116,5 +115,44 @@ where check_flag=2 and ck_produce_type=1 and d.type=0 and tz_date between #{from
 GROUP BY b.depart_name,d.type
 
 	</select>
+
+	<select id="getSiteCollectPointWater" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct">
+SELECT b.depart_name, #{staticYearMonth} as static_year_month,year(#{staticYearMonth}) as static_year,month(#{staticYearMonth}) as static_month, c.collect_point, c.point_type_id, d.product_name, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+left join hte_collect_point c on a.collect_id = c.id
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and d.type=0 and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name, c.collect_point, c.point_type_id, d.product_name
+	</select>
+
+	<select id="getSiteCollectPointSludge" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct">
+SELECT b.depart_name, #{staticYearMonth} as static_year_month,year(#{staticYearMonth}) as static_year,month(#{staticYearMonth}) as static_month, d.product_name, ifnull(sum(a.sl_t), 0) as sl_t FROM `hte_ck_product` a
+left join sys_depart b on a.site_id = b.org_code
+LEFT JOIN hte_product d on d.id = a.product_id
+where check_flag=2 and d.type=1 and tz_date between #{fromDate} and #{toDate}
+GROUP BY b.depart_name, d.product_name
+	</select>
+
+	<select id="getSludgeGrade" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct">
+SELECT b.id as parent_id, e.depart_name,f.product_name, d.test_index, a.test_value, c.sl_t, c.tz_date FROM `hte_ck_product_data_collect_detail` a
+left join hte_ck_product_data_collect b on b.id = a.parent_id
+left join hte_ck_product c on c.id = b.parent_id
+left join hte_test_index d on d.id = a.test_index_id
+left join sys_depart e on e.org_code = b.site_id
+left join hte_product f on f.id = c.product_id
+where a.test_index_id in ("1460493459340165127", "1460493459340165128", "1460493459340165129") and c.tz_date between #{fromDate} and #{toDate}
+ORDER BY b.id
+	</select>
+
+	<select id="getSludgeMoisture" resultType="org.jeecg.modules.demo.ckproduct.entity.HteCkProduct">
+ SELECT b.id as parent_id, e.depart_name,f.product_name, d.test_index, a.test_value, c.sl_t, c.tz_date FROM `hte_ck_product_data_collect_detail` a
+left join hte_ck_product_data_collect b on b.id = a.parent_id
+left join hte_ck_product c on c.id = b.parent_id
+left join hte_test_index d on d.id = a.test_index_id
+left join sys_depart e on e.org_code = b.site_id
+left join hte_product f on f.id = c.product_id
+where a.test_index_id="1460493459340165123" and c.tz_date between #{fromDate} and #{toDate}
+ORDER BY b.id
+ </select>
 
 </mapper>

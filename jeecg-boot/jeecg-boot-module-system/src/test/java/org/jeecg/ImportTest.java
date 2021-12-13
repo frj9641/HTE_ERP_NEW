@@ -73,14 +73,14 @@ public class ImportTest {
 
     @Test
     public void testCkProductDataCollectMain() throws FileNotFoundException {
-        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\ck_product_data_collect_main.xlsx");
+        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\no_collect_data_sludge_ckproduct.xlsx");
         System.out.println(excelWorker);
         excelWorker.importExcel(fileInputStream, 0);
     }
 
     @Test
     public void testCkProductDataCollectDetail() throws FileNotFoundException {
-        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\ck_product_data_collect_detail" +
+        InputStream fileInputStream = new FileInputStream("E:\\IdeaProject\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\simulate_sludge_collect_data" +
                 ".xlsx");
         System.out.println(excelWorker);
         excelWorker.importExcel(fileInputStream, 0);
