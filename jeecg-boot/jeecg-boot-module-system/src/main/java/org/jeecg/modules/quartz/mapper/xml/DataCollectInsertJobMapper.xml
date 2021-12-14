@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.quartz.mapper.DataCollectInsertJobMapper">
+    <insert id="insertMonthly">
+        insert into detail_port_monthly(site, time, type, indicator, value)
+        values (#{departName}, #{time}, #{type}, #{indicator}, #{value})
+    </insert>
+
+</mapper>
