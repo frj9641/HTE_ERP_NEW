@@ -15,6 +15,14 @@
         group by d.depart_name
     </select>
     <select id="selectNiByDate" resultType="java.util.Map">
-
+        SELECT c.collect_point, d.depart_name, a.is_ok
+        FROM hte_water_data_collect_detail a
+                 LEFT JOIN hte_water_data_collect b ON a.parent_id = b.id
+                 LEFT JOIN hte_collect_point c ON b.collect_point = c.id
+                 LEFT JOIN sys_depart d ON b.site_id = d.org_code
+        WHERE c.collect_point LIKE '%铬%'
+          AND a.is_ok IS NOT NULL
+          AND c.point_type_id = 2
+          and b.collect_date between #{from} and #{to}
     </select>
 </mapper>
