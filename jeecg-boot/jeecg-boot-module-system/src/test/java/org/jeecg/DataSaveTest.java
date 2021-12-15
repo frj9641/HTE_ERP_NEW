@@ -23,7 +23,7 @@ public class DataSaveTest {
     @Autowired
     private DataCollectSelectJobMapper dataCollectSelectJobMapper;
 
-    private String[] index = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+    private final String[] index = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
 
     @Test
     public void savePortDetailMonthly() throws ParseException {
