@@ -12,4 +12,6 @@ import java.util.Map;
 public interface DataCollectInsertJobMapper {
 
     void insertMonthly(Map<String, String> map);
+
+    void insertDataCollect(List<Map<String, String>> list);
 }

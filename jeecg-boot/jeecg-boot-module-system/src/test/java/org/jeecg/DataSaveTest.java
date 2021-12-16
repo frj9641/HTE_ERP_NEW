@@ -4,10 +4,12 @@ import org.jeecg.modules.quartz.job.CkProductDealJob;
 import org.jeecg.modules.quartz.mapper.DataCollectInsertJobMapper;
 import org.jeecg.modules.quartz.mapper.DataCollectSelectJobMapper;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +26,30 @@ public class DataSaveTest {
     private DataCollectSelectJobMapper dataCollectSelectJobMapper;
 
     private final String[] index = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
+
+    @Test
+    public void saveDataCollect() throws ParseException {
+        List<Map<String, Object>> list = dataCollectSelectJobMapper.selectAllDataCollect();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        List<Map<String, String>> res = new ArrayList<>();
+        for (Map<String, Object> l : list) {
+            Map<String, String> map = new HashMap<>();
+            String collect_date = l.get("collect_date").toString();
+            String[] timeZone = ckProductDealJob.getTimeZone(simpleDateFormat.parse(collect_date));
+            map.put("collectDate", collect_date);
+            map.put("collectTime", l.get("collect_time") == null ? null : l.get("collect_time").toString());
+            map.put("collectPoint", l.get("collect_point") == null ? null : l.get("collect_point").toString());
+            map.put("departName", l.get("depart_name") == null ? null : l.get("depart_name").toString());
+            map.put("testIndex", l.get("test_index") == null ? null : l.get("test_index").toString());
+            map.put("testValue", l.get("test_value") == null ? null : l.get("test_value").toString());
+            map.put("isOk", l.get("is_ok") == null ? null : l.get("is_ok").toString());
+            map.put("staticYearMonth", timeZone[2]);
+            map.put("staticYear", timeZone[2].split("-")[0]);
+            map.put("staticMonth", String.valueOf(Integer.parseInt(timeZone[2].split("-")[1])));
+            res.add(map);
+        }
+        dataCollectInsertJobMapper.insertDataCollect(res);
+    }
 
     @Test
     public void savePortDetailMonthly() throws ParseException {

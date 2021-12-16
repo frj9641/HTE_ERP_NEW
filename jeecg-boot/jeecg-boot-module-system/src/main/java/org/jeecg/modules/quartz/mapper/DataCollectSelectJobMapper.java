@@ -15,4 +15,7 @@ public interface DataCollectSelectJobMapper {
     @MapKey(value = "")
     List<Map<String, Object>> selectNiByDate(String from, String to);
 
+    @MapKey(value = "")
+    List<Map<String, Object>> selectAllDataCollect();
+
 }
