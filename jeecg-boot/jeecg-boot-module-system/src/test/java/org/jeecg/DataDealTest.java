@@ -317,7 +317,7 @@ public class DataDealTest {
      * @Author: lpf
      * @Date: 2021/11/30 9:56
      **/
-    public String materialZnToEn(String material) {
+    public static String materialZnToEn(String material) {
         if (material.equals("石灰")) {
             material = "shihui";
         } else if (material.equals("次钠")) {

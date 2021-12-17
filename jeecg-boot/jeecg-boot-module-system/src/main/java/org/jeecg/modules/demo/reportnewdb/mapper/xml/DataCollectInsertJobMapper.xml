@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.jeecg.modules.quartz.mapper.DataCollectInsertJobMapper">
+<mapper namespace="org.jeecg.modules.demo.reportnewdb.mapper.DataCollectInsertJobMapper">
     <insert id="insertMonthly">
         insert into detail_port_monthly(site, time, type, indicator, value)
         values (#{departName}, #{time}, #{type}, #{indicator}, #{value})
     </insert>
     <insert id="insertDataCollect">
         insert into detail_data_collect(collect_date, collect_time, collect_point, depart_name, test_index, test_value,
-        is_ok, static_year_month, static_year, static_month)
+        is_ok, static_year_month, static_year, static_month,standard_type,standard_max)
         values
         <foreach collection="list" item="item" separator=",">
             (#{item.collectDate}, #{item.collectTime}, #{item.collectPoint}, #{item.departName}, #{item.testIndex},
             #{item.testValue}, #{item.isOk},
-            #{item.staticYearMonth}, #{item.staticYear}, #{item.staticMonth})
+            #{item.staticYearMonth}, #{item.staticYear}, #{item.staticMonth},#{item.standardType},#{item.standardMax})
         </foreach>
     </insert>
 

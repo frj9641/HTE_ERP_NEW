@@ -1,15 +1,14 @@
 package org.jeecg;
 
+import org.jeecg.modules.demo.reportnewdb.mapper.PerTonComsumptionMapper;
 import org.jeecg.modules.quartz.job.CkProductDealJob;
-import org.jeecg.modules.quartz.mapper.DataCollectInsertJobMapper;
-import org.jeecg.modules.quartz.mapper.DataCollectSelectJobMapper;
+import org.jeecg.modules.demo.reportnewdb.mapper.DataCollectInsertJobMapper;
+import org.jeecg.modules.demo.reportnewdb.mapper.DataCollectSelectJobMapper;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,6 +23,8 @@ public class DataSaveTest {
     private DataCollectInsertJobMapper dataCollectInsertJobMapper;
     @Autowired
     private DataCollectSelectJobMapper dataCollectSelectJobMapper;
+    @Autowired
+    private PerTonComsumptionMapper perTonComsumptionMapper;
 
     private final String[] index = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十"};
 
@@ -46,6 +47,8 @@ public class DataSaveTest {
             map.put("staticYearMonth", timeZone[2]);
             map.put("staticYear", timeZone[2].split("-")[0]);
             map.put("staticMonth", String.valueOf(Integer.parseInt(timeZone[2].split("-")[1])));
+            map.put("standardType", l.get("item_text") == null ? null : l.get("item_text").toString());
+            map.put("standardMax", l.get("max") == null ? null : l.get("max").toString());
             res.add(map);
         }
         dataCollectInsertJobMapper.insertDataCollect(res);
@@ -158,5 +161,18 @@ public class DataSaveTest {
             res.put(site, sum / count);
         }
         return res;
+    }
+
+    @Test
+    public void savePerTonConsumption() {
+        List<Map<String, String>> list = perTonComsumptionMapper.selectAll();
+        for (Map<String, String> l : list) {
+            String material1 = l.get("material");
+            String material = DataDealTest.materialZnToEn(material1);
+            String sitename = l.get("sitename");
+            String staticYearMonth = l.get("static_year_month");
+            String value = perTonComsumptionMapper.selectByParams(sitename, staticYearMonth, material);
+            perTonComsumptionMapper.updateByParams(sitename, staticYearMonth, material1, value);
+        }
     }
 }

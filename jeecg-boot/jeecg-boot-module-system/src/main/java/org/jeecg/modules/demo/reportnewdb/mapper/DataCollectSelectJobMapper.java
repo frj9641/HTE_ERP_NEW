@@ -1,4 +1,4 @@
-package org.jeecg.modules.quartz.mapper;
+package org.jeecg.modules.demo.reportnewdb.mapper;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import org.apache.ibatis.annotations.MapKey;
