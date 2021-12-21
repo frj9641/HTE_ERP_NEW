@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.demo.ckproduct.entity.HteCkProduct;
+import org.jeecg.modules.demo.material.entity.HteKcMaterial;
 import org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface HteKcMaterialCkTzdMapper extends BaseMapper<HteKcMaterialCkTzd>
     @MapKey("description")
     Map<String, Map<String, Object>> getMaterialConsumptionBySite(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
+
+    List<HteKcMaterialCkTzd> getKcMaterialAll(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 }

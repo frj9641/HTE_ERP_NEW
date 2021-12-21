@@ -17,4 +17,10 @@
         group by depart_name, material_id
     </select>
 
+    <select id="getKcMaterialAll" resultType="org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd">
+SELECT site_id, material_id, supply_id, operate_date,
+sl_kg,dj,yfdj, zje,type as detail_type FROM `hte_kc_material_all`
+where operate_date between #{fromDate} and #{toDate}
+	</select>
+
 </mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.quartz.mapper.MaterialKcDealJobMapper">
+
+	<insert id="saveMaterialKcAll">
+		insert into material_kc_detail(sitename, supply_name, material, operate_date,
+		 sl_kg, dj,yfdj, zje, type, static_year_month, static_year, static_month)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(
+			#{item.siteId},#{item.supplyId},#{item.materialId},#{item.operateDate},#{item.slKg},#{item.dj},
+			#{item.yfdj},#{item.zje},#{item.detailType},#{staticYearMonth},year(#{staticYearMonth}),month(#{staticYearMonth})
+			)
+		</foreach>
+  	</insert>
+
+	<delete id="batchDeleteMaterialKc">
+		delete from material_kc_detail where static_year_month=#{staticYearMonth}
+	</delete>
+
+	<insert id="saveMaterialKcGeneral">
+        insert into sitename_material_kc_pertonconsumption(
+        sitename,
+        material,
+        static_year_month,
+        static_year,
+        static_month,
+        use_sl_kg,
+        use_zje,
+        kc_sl_kg
+        )
+
+        select a.*, b.kc_sl_kg from
+        (SELECT
+        sitename,
+        material,
+        static_year_month,
+        static_year,
+        static_month,
+        round((-1)*sum(sl_kg),2) as use_sl_kg,
+        round((-1)*sum(zje),2) as use_zje
+        FROM
+        `material_kc_detail`
+        where type = "出库" and static_year_month= #{staticYearMonth}
+        GROUP BY
+        sitename,
+        material,
+        static_year_month,
+        static_year,
+        static_month) a
+        left join
+        (SELECT
+        sitename,
+        material,
+        #{staticYearMonth} as static_year_month,
+        year(#{staticYearMonth}) as static_year,
+        month(#{staticYearMonth}) as static_month,
+        round(sum(sl_kg),2) as kc_sl_kg
+        FROM
+        `material_kc_detail`
+        where static_year_month &lt;=#{staticYearMonth}
+        GROUP BY
+        sitename,
+        material) b on (a.sitename = b.sitename and a.material=b.material)
+    </insert>
+
+	<delete id="batchDeleteMaterialKcGeneral">
+		delete from sitename_material_kc_pertonconsumption where static_year_month=#{staticYearMonth}
+	</delete>
+
+</mapper>

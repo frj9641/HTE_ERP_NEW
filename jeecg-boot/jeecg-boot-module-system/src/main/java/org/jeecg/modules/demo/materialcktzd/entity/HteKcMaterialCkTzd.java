@@ -104,4 +104,32 @@ public class HteKcMaterialCkTzd implements Serializable {
     @Excel(name = "物料名称", width = 15)
     @ApiModelProperty(value = "物料名称")
     private java.lang.String material;
+
+    /*****************************************************************************/
+    /**操作日期*/
+    @Excel(name = "操作日期", width = 15)
+    @ApiModelProperty(value = "操作日期")
+    private java.lang.String operateDate;
+
+    /**单价(元/千克)*/
+    @Excel(name = "单价(元/千克)", width = 15)
+    @ApiModelProperty(value = "单价(元/千克)")
+    private java.lang.String dj;
+
+    /**运费单价(元/千克)*/
+    @Excel(name = "运费单价(元/千克)", width = 15)
+    @ApiModelProperty(value = "运费单价(元/千克)")
+    private java.lang.String yfdj;
+
+    /**总金额*/
+    @Excel(name = "总金额", width = 15)
+    @ApiModelProperty(value = "总金额")
+    private java.lang.String zje;
+
+    /**类型：入库、出库、调整 （用于统计）*/
+    @Excel(name = "类型：入库、出库、调整 （用于统计）", width = 15)
+    @ApiModelProperty(value = "类型：入库、出库、调整 （用于统计）")
+    private java.lang.String detailType;
+
+
 }

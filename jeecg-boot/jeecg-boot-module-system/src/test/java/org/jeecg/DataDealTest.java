@@ -10,8 +10,10 @@ import org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd;
 import org.jeecg.modules.demo.materialcktzd.mapper.HteKcMaterialCkTzdMapper;
 import org.jeecg.modules.excel.ExcelWorker;
 import org.jeecg.modules.quartz.entity.CkProduct;
+import org.jeecg.modules.quartz.entity.MaterialKc;
 import org.jeecg.modules.quartz.job.CkProductDealJob;
 import org.jeecg.modules.quartz.mapper.CkProductDealJobMapper;
+import org.jeecg.modules.quartz.mapper.MaterialKcDealJobMapper;
 import org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper;
 import org.junit.Test;
 import org.junit.platform.commons.util.StringUtils;
@@ -43,6 +45,8 @@ public class DataDealTest {
     PertonconsumptionDealJobMapper pertonconsumptionDealJobMapper;
     @Autowired
     HteCkProductMapper hteCkProductMapper;
+    @Autowired
+    MaterialKcDealJobMapper materialKcDealJobMapper;
 
     /**
      * @Description: 保存jeecg-boot中的历史产出品数据 至 sitename_product_month, 并汇总test_ckproduct_general
@@ -309,6 +313,43 @@ public class DataDealTest {
         pertonconsumptionDealJobMapper.updateNewColumn();
 
     }
+
+    /**
+     * @Description: 处理 物料库存明文数据：hte_kc_material_all 包含：入库、出库、调整单
+     *              处理结果 保存至report_db_new 库中对应表格
+     * @Param: []
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/17 10:02
+    **/
+    @Test
+    public void materialKcDetailTest() throws ParseException {
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date beginDate = dateFormat1.parse("2010-08-01");
+        Date endDate = dateFormat1.parse("2021-11-01");
+        Date date = beginDate;
+        while (!date.equals(endDate)) {
+            System.out.println("统计日期----->" + DateUtils.date2Str(date, dateFormat1));
+            String[] timeZone = ckProductDealJob.getTimeZone(date);
+            List<HteKcMaterialCkTzd> materialKcAllList = new ArrayList<>();
+            materialKcAllList = hteKcMaterialCkTzdMapper.getKcMaterialAll(timeZone[0], timeZone[1]);
+            materialKcDealJobMapper.batchDeleteMaterialKc(timeZone[2]);
+            // 保存物料库存明细
+            if (materialKcAllList.size() > 0) {
+                materialKcDealJobMapper.saveMaterialKcAll(materialKcAllList, timeZone[2]);
+            }
+            materialKcDealJobMapper.batchDeleteMaterialKcGeneral(timeZone[2]);
+            // 保存物料库存统计数据：厂站-物料-统计年月-出库数量-库存数量-出库金额
+            materialKcDealJobMapper.saveMaterialKcGeneral(timeZone[2]);
+            // 物料库存数据 与
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1); // 月份加1
+            date = c.getTime();
+        }
+    }
+
 
     /**r
      * @Description: 中文物料名称转变为英文
