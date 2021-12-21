@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.reportnewdb.mapper.PerTonComsumptionMapper">
+    <update id="updateByParams">
+        update sitename_material_kc_pertonconsumption
+        set perton_consumption=#{value}
+        where sitename = #{site}
+          and material = #{material}
+          and static_year_month = #{time}
+    </update>
+
+    <select id="selectAll" resultType="java.util.Map">
+        select sitename, material, static_year_month
+        from sitename_material_kc_pertonconsumption;
+    </select>
+    <select id="selectByParams" resultType="java.lang.String">
+        select ${material}
+        from sitename_medicament_perton_consumption_general
+        where sitename = #{site}
+          and static_year_month = #{time}
+    </select>
+</mapper>

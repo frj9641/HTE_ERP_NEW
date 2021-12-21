@@ -54,6 +54,8 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         QueryWrapper<HteKcMaterialPurchase> queryWrapper = QueryGenerator.initQueryWrapper(hteKcMaterialPurchase, req.getParameterMap());
+        //todo 生成代码通病，需要手写按日期倒序排列
+        queryWrapper.select().orderByDesc("create_time");
         Page<HteKcMaterialPurchase> page = new Page<HteKcMaterialPurchase>(pageNo, pageSize);
         IPage<HteKcMaterialPurchase> pageList = hteKcMaterialPurchaseService.page(page, queryWrapper);
         return Result.OK(pageList);
@@ -133,7 +135,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
-     * 获取出库单据号
+     * 获取采购单据号
      *
      * @param id
      * @return
@@ -169,7 +171,7 @@ public class HteKcMaterialPurchaseController extends JeecgController<HteKcMateri
     }
 
     /**
-     * 获取调增单据号
+     * 获取调整单据号
      *
      * @param id
      * @return

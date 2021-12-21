@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.dataCollect.mapper.HtePortDataCollectDetailMapper">
+
+	<delete id="deleteByMainId" parameterType="java.lang.String">
+		DELETE 
+		FROM  hte_port_data_collect_detail 
+		WHERE
+			 parent_id = #{mainId} 	</delete>
+	
+	<select id="selectByMainId" parameterType="java.lang.String" resultType="org.jeecg.modules.demo.dataCollect.entity.HtePortDataCollectDetail">
+		SELECT * 
+		FROM  hte_port_data_collect_detail
+		WHERE
+			 parent_id = #{mainId} 	</select>
+</mapper>

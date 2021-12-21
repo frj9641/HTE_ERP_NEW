@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.demo.reportnewdb.mapper.DataCollectSelectJobMapper">
+    <select id="selectAllByDate" resultType="java.util.Map">
+        SELECT d.depart_name, sum(a.is_ok) / count(a.is_ok) as value
+        FROM hte_water_data_collect_detail a
+            LEFT JOIN hte_water_data_collect b
+        ON a.parent_id = b.id
+            LEFT JOIN hte_collect_point c ON b.collect_point = c.id
+            LEFT JOIN sys_depart d ON b.site_id = d.org_code
+        WHERE c.collect_point = '排放口'
+          AND a.is_ok IS NOT NULL
+          and b.collect_date between #{from}
+          and #{to}
+        group by d.depart_name
+    </select>
+    <select id="selectNiByDate" resultType="java.util.Map">
+        SELECT c.collect_point, d.depart_name, a.is_ok
+        FROM hte_water_data_collect_detail a
+                 LEFT JOIN hte_water_data_collect b ON a.parent_id = b.id
+                 LEFT JOIN hte_collect_point c ON b.collect_point = c.id
+                 LEFT JOIN sys_depart d ON b.site_id = d.org_code
+        WHERE c.collect_point LIKE '%铬%'
+          AND a.is_ok IS NOT NULL
+          AND c.point_type_id = 2
+          and b.collect_date between #{from} and #{to}
+    </select>
+    <select id="selectAllDataCollect" resultType="java.util.Map">
+        SELECT a.id,
+               b.collect_date,
+               b.collect_time,
+               c.collect_point,
+               d.depart_name,
+               e.test_index,
+               a.test_value,
+               a.is_ok,
+               f.item_text,
+               g.max
+        FROM hte_water_data_collect_detail a
+                 LEFT JOIN hte_water_data_collect b ON a.parent_id = b.id
+                 LEFT JOIN hte_collect_point c ON b.collect_point = c.id
+                 LEFT JOIN sys_depart d ON b.site_id = d.org_code
+                 LEFT JOIN hte_test_index e ON a.test_index_id = e.id
+                 LEFT JOIN sys_dict_item f ON f.dict_id = '1469225503514537986'
+            AND a.standard_type = f.item_value
+                 LEFT JOIN hte_emission_standard g ON a.test_index_id = g.test_index_id
+            AND a.standard_type = g.standard_type
+    </select>
+</mapper>
