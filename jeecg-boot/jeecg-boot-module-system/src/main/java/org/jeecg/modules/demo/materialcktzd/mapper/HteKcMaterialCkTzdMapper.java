@@ -26,4 +26,11 @@ public interface HteKcMaterialCkTzdMapper extends BaseMapper<HteKcMaterialCkTzd>
 
 
     List<HteKcMaterialCkTzd> getKcMaterialAll(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
+    List<HteKcMaterialCkTzd> getKcMaterialAllForUpdate();
+
+
+//    void updateKcMaterial(HteKcMaterialCkTzd mod);
+
+    void updateKcMaterial(@Param("list") List<HteKcMaterialCkTzd> list);
 }

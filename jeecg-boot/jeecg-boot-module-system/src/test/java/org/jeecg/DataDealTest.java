@@ -1,8 +1,5 @@
 package org.jeecg;
 
-import com.google.gson.internal.$Gson$Preconditions;
-import org.apache.poi.hpsf.Decimal;
-import org.checkerframework.checker.units.qual.A;
 import org.jeecg.common.util.DateUtils;
 import org.jeecg.modules.demo.ckproduct.entity.HteCkProduct;
 import org.jeecg.modules.demo.ckproduct.mapper.HteCkProductMapper;
@@ -10,22 +7,16 @@ import org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd;
 import org.jeecg.modules.demo.materialcktzd.mapper.HteKcMaterialCkTzdMapper;
 import org.jeecg.modules.excel.ExcelWorker;
 import org.jeecg.modules.quartz.entity.CkProduct;
-import org.jeecg.modules.quartz.entity.MaterialKc;
 import org.jeecg.modules.quartz.job.CkProductDealJob;
 import org.jeecg.modules.quartz.mapper.CkProductDealJobMapper;
 import org.jeecg.modules.quartz.mapper.MaterialKcDealJobMapper;
 import org.jeecg.modules.quartz.mapper.PertonconsumptionDealJobMapper;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -50,7 +41,7 @@ public class DataDealTest {
 
     /**
      * @Description: 保存jeecg-boot中的历史产出品数据 至 sitename_product_month, 并汇总test_ckproduct_general
-     *               保存：运营中心产出品总量及同比环比、各厂站产出品总量及同比环比
+     * 保存：运营中心产出品总量及同比环比、各厂站产出品总量及同比环比
      * @Param: []
      * @return: void
      * @Author: lpf
@@ -79,7 +70,7 @@ public class DataDealTest {
                 //
             }
             // 处理厂站产出品： 水、泥、产泥率 的同比环比数据，用于厂站月报
-            List<String> siteList =  ckProductDealJobMapper.getSiteList(timeZone[2]);
+            List<String> siteList = ckProductDealJobMapper.getSiteList(timeZone[2]);
             if (siteList.size() > 0) {
                 for (String site : siteList) {
                     ckProductDealJobMapper.updateSiteCkProductGeneral(site, timeZone[2]);
@@ -97,7 +88,7 @@ public class DataDealTest {
      * @return: void
      * @Author: lpf
      * @Date: 2021/12/10 9:22
-    **/
+     **/
     @Test
     public void batchSaveSiteCollectPointCkProduct() throws ParseException {
         Calendar c = Calendar.getInstance();
@@ -107,8 +98,8 @@ public class DataDealTest {
         Date date = beginDate;
         while (!date.equals(endDate)) {
             String[] timeZone = ckProductDealJob.getTimeZone(date);
-            List<HteCkProduct> siteCollectPointWater = hteCkProductMapper.getSiteCollectPointWater(timeZone[2],timeZone[0],timeZone[1]);
-            List<HteCkProduct> siteCollectPointSludge = hteCkProductMapper.getSiteCollectPointSludge(timeZone[2],timeZone[0],timeZone[1]);
+            List<HteCkProduct> siteCollectPointWater = hteCkProductMapper.getSiteCollectPointWater(timeZone[2], timeZone[0], timeZone[1]);
+            List<HteCkProduct> siteCollectPointSludge = hteCkProductMapper.getSiteCollectPointSludge(timeZone[2], timeZone[0], timeZone[1]);
             // sitename_collect_point_product_month: 删除当月已有汇总数据
             ckProductDealJobMapper.batchDeleteSiteCollectPointWater(timeZone[2]);
             // sitename_collect_point_product_month: 保存最新的汇总数据
@@ -130,9 +121,9 @@ public class DataDealTest {
      * @return: void
      * @Author: lpf
      * @Date: 2021/12/13 9:13
-    **/
+     **/
     @Test
-    public void saveSludgeGrade () throws ParseException {
+    public void saveSludgeGrade() throws ParseException {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
@@ -175,7 +166,7 @@ public class DataDealTest {
                     moisture = Double.valueOf(subMap2.get("含水率").getTestValue()); // get 含水率
                     slT = Double.valueOf(subMap2.get("含水率").getSlT()); // get 泥量
                 }
-                testValue = slT*(1-moisture/100)*testValue/100; // 计算品位
+                testValue = slT * (1 - moisture / 100) * testValue / 100; // 计算品位
                 mod.setTestValue(testValue.toString());
                 subMap2.put(testIndex, mod);
                 detailMap.put(parentId, subMap2);
@@ -191,7 +182,7 @@ public class DataDealTest {
                 String output = "";
                 while (it2.hasNext()) {
                     Map.Entry<String, HteCkProduct> entry2 = it2.next();
-                    output = output + "&&&&" + entry2.getValue().getDepartName() + "-" +entry2.getValue().getProductName() + "-" +entry2.getValue().getTestIndex() + "-" +entry2.getValue().getTestValue() + "-" + entry2.getValue().getTzDate();
+                    output = output + "&&&&" + entry2.getValue().getDepartName() + "-" + entry2.getValue().getProductName() + "-" + entry2.getValue().getTestIndex() + "-" + entry2.getValue().getTestValue() + "-" + entry2.getValue().getTzDate();
                     sludgeGradeList2.add(entry2.getValue());
                 }
                 System.out.println(output);
@@ -210,12 +201,12 @@ public class DataDealTest {
 
     /**
      * @Description: 保存jeecg-boot中的药剂使用数据 至 medicament_use_data
-     *               保存：运营中心药剂吨耗、各厂站药剂吨耗
+     * 保存：运营中心药剂吨耗、各厂站药剂吨耗
      * @Param: []
      * @return: void
      * @Author: lpf
      * @Date: 2021/11/30 14:15
-    **/
+     **/
     @Test
     public void perconsumptionTest() throws ParseException {
 
@@ -235,17 +226,17 @@ public class DataDealTest {
             // 循环处理 计算药剂用量
             Map<String, Map<String, Object>> map1 = new HashMap<>();
             for (Map.Entry<String, Map<String, Object>> siteMaterialMap : map.entrySet()) {
-                String siteName = (String)siteMaterialMap.getValue().get("depart_name");
+                String siteName = (String) siteMaterialMap.getValue().get("depart_name");
                 String material = (String) siteMaterialMap.getValue().get("material");
                 double slKg = (Double) siteMaterialMap.getValue().get("sl_kg");
                 material = materialZnToEn(material);
-                Map<String, String> productDetail = (Map)productMap.get(siteName);
+                Map<String, String> productDetail = (Map) productMap.get(siteName);
                 double sumWater = 0;
                 if (productDetail != null) {
                     sumWater = Double.valueOf(productDetail.get("sl_t"));
                 }
-                    Map<String, Object> insertDataMap = new HashMap<>();
-                if (!material.equals("0") ) { // && sumWater > 0
+                Map<String, Object> insertDataMap = new HashMap<>();
+                if (!material.equals("0")) { // && sumWater > 0
 //                    slKg = slKg / sumWater;
                     if (!map1.containsKey(siteName)) {
                         insertDataMap.put("sitename", siteName);
@@ -264,18 +255,18 @@ public class DataDealTest {
 
             for (Map.Entry<String, Map<String, Object>> map2 : map1.entrySet()) {
                 List<Map<String, String>> list = new ArrayList<>();
-                Map<String,Object> map3 = new HashMap<>();
+                Map<String, Object> map3 = new HashMap<>();
 
                 map3 = map2.getValue();
                 for (Map.Entry<String, Object> map4 : map3.entrySet()) {
-                    Map<String,String> map5 = new HashMap<>();
-                    if (map4.getKey()!=null && map4.getValue()!=null){
+                    Map<String, String> map5 = new HashMap<>();
+                    if (map4.getKey() != null && map4.getValue() != null) {
                         map5.put("key", map4.getKey());
                         map5.put("value", map4.getValue().toString());
                         list.add(map5);
                     }
                 }
-                Map<String,Object> maps=new HashMap<String,Object>();
+                Map<String, Object> maps = new HashMap<String, Object>();
                 maps.put("list", list);
                 if (list.size() > 0) {
                     pertonconsumptionDealJobMapper.deleteMedicamentUseData(timeZone[2], map2.getKey()); // 厂站——药剂——用量 删除
@@ -283,12 +274,12 @@ public class DataDealTest {
                 }
             }
             // 厂站——药剂——吨耗 计算
-            List<String> siteList =  pertonconsumptionDealJobMapper.getSiteList(timeZone[2]);
+            List<String> siteList = pertonconsumptionDealJobMapper.getSiteList(timeZone[2]);
             if (siteList.size() > 0) {
                 for (String site : siteList) {
-                    pertonconsumptionDealJobMapper.deleteSitePertonconsumption(timeZone[2],site); // 删除历史数据
-                    pertonconsumptionDealJobMapper.saveSitePertonconsumption(timeZone[2],site); // 添加新数据
-                    pertonconsumptionDealJobMapper.updateSitePertonconsumptionNewColumn(timeZone[2],site); // 更新新液碱、重捕剂、硫酸
+                    pertonconsumptionDealJobMapper.deleteSitePertonconsumption(timeZone[2], site); // 删除历史数据
+                    pertonconsumptionDealJobMapper.saveSitePertonconsumption(timeZone[2], site); // 添加新数据
+                    pertonconsumptionDealJobMapper.updateSitePertonconsumptionNewColumn(timeZone[2], site); // 更新新液碱、重捕剂、硫酸
                 }
             }
             c.setTime(date);
@@ -298,7 +289,7 @@ public class DataDealTest {
         // 汇总吨耗计算
         List<Map<String, String>> list1 = pertonconsumptionDealJobMapper.calculatePertonconsumption();
         pertonconsumptionDealJobMapper.truncatePertonconsumption(); // 清空吨耗表
-        for (int i = 0; i < list1.size();i ++) {
+        for (int i = 0; i < list1.size(); i++) {
             Map<String, String> consumption = list1.get(i);
             List<Map<String, String>> list2 = new ArrayList<>();
             for (Map.Entry<String, String> entry : consumption.entrySet()) {
@@ -311,17 +302,16 @@ public class DataDealTest {
         }
         // 药剂吨耗 根据分类，二次统计
         pertonconsumptionDealJobMapper.updateNewColumn();
-
     }
 
     /**
      * @Description: 处理 物料库存明文数据：hte_kc_material_all 包含：入库、出库、调整单
-     *              处理结果 保存至report_db_new 库中对应表格
+     * 处理结果 保存至report_db_new 库中对应表格
      * @Param: []
      * @return: void
      * @Author: lpf
      * @Date: 2021/12/17 10:02
-    **/
+     **/
     @Test
     public void materialKcDetailTest() throws ParseException {
 
@@ -350,8 +340,54 @@ public class DataDealTest {
         }
     }
 
+    /**
+     * @Description: 修改 hte_kc_material_all 表中 每条记录的 kc_sl_kg 字段
+     * @Param: []
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/22 10:28
+     **/
+    @Test
+    public void updateMaterialAllKc() {
 
-    /**r
+        List<HteKcMaterialCkTzd> list = hteKcMaterialCkTzdMapper.getKcMaterialAllForUpdate();
+        int size = list.size();
+        int index = 0;
+        int head = 0;
+        List<Map<String, String>> res = new ArrayList<>();
+        Map<String, Double> kcmap = new HashMap<>();
+        for (HteKcMaterialCkTzd mod : list){
+            String key = mod.getSiteId() + "_" + mod.getMaterialId();
+            Double slKg = mod.getSlKg();
+            Double origin = 0.00;
+            if (kcmap.containsKey(key)) {
+                origin = kcmap.get(key);
+            }
+            origin = origin + slKg;
+            mod.setKcSlKg(origin);
+            kcmap.put(key, origin);
+        }
+
+        while (index < size) {
+            long start = System.currentTimeMillis();
+            if (index % 1000 == 0 && index != 0) {
+                List<HteKcMaterialCkTzd> subList = list.subList(head, index);
+                System.out.println(" 记录汇总范围： " + head + "-------》 " + index);
+                hteKcMaterialCkTzdMapper.updateKcMaterial(subList);
+                head = index;
+            }
+            long end = System.currentTimeMillis();
+            System.out.println("-----------1000条批量update 用时：" + (end - start) / 1000 + "秒");
+            index++;
+        }
+//        hteKcMaterialCkTzdMapper.updateKcMaterial(list);
+
+    }
+
+
+    /**
+     *
+     *
      * @Description: 中文物料名称转变为英文
      * @Param:
      * @return:

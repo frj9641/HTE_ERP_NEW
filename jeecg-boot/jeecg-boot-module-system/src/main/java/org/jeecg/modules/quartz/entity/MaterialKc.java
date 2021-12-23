@@ -60,4 +60,10 @@ public class MaterialKc implements Serializable {
 	@Excel(name="日均水量",width=40)
 	private String perDayWater;
 
+	/**************物料库存总表查询字段******/
+	/**厂站名称*/
+	private String siteId;
+	/**物料名称*/
+	private String materialId;
+
 }

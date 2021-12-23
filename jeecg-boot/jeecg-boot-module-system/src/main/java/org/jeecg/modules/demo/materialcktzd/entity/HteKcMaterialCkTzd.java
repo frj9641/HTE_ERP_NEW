@@ -131,5 +131,7 @@ public class HteKcMaterialCkTzd implements Serializable {
     @ApiModelProperty(value = "类型：入库、出库、调整 （用于统计）")
     private java.lang.String detailType;
 
+    private java.lang.Double kcSlKg;
+
 
 }
