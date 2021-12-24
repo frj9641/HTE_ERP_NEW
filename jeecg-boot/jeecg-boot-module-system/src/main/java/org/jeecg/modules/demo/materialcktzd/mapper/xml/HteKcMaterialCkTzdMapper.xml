@@ -3,30 +3,52 @@
 <mapper namespace="org.jeecg.modules.demo.materialcktzd.mapper.HteKcMaterialCkTzdMapper">
 
     <select id="getMaterialConsumption" resultType="java.util.Map">
-        SELECT b.material, sum(sl_kg) as sl_kg FROM `hte_kc_material_ck_tzd` a
-        LEFT JOIN hte_kc_material b on a.material_id = b.id
-        where a.check_flag = 2 and operate_date between #{fromDate} and #{toDate}
+        SELECT b.material, sum(sl_kg) as sl_kg
+        FROM `hte_kc_material_ck_tzd` a
+                 LEFT JOIN hte_kc_material b on a.material_id = b.id
+        where a.check_flag = 2
+          and operate_date between #{fromDate} and #{toDate}
         group by material_id
     </select>
 
     <select id="getMaterialConsumptionBySite" resultType="java.util.Map">
-        SELECT concat(c.depart_name, b.material) as description, c.depart_name, b.material, sum(sl_kg) as sl_kg FROM `hte_kc_material_ck_tzd` a
-        LEFT JOIN hte_kc_material b on a.material_id = b.id
-        left join sys_depart c on c.org_code = a.site_id
-        where a.check_flag = 2 and operate_date between #{fromDate} and #{toDate}
+        SELECT concat(c.depart_name, b.material) as description, c.depart_name, b.material, sum(sl_kg) as sl_kg
+        FROM `hte_kc_material_ck_tzd` a
+                 LEFT JOIN hte_kc_material b on a.material_id = b.id
+                 left join sys_depart c on c.org_code = a.site_id
+        where a.check_flag = 2
+          and operate_date between #{fromDate} and #{toDate}
         group by depart_name, material_id
     </select>
 
     <select id="getKcMaterialAll" resultType="org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd">
-SELECT site_id, material_id, supply_id, operate_date,
-sl_kg,dj,yfdj, zje,type as detail_type FROM `hte_kc_material_all`
-where operate_date between #{fromDate} and #{toDate}
-	</select>
+        SELECT site_id,
+               material_id,
+               supply_id,
+               operate_date,
+               sl_kg,
+               dj,
+               yfdj,
+               zje,
+               type as detail_type
+        FROM `hte_kc_material_all`
+        where operate_date between #{fromDate} and #{toDate}
+    </select>
 
     <select id="getKcMaterialAllForUpdate" resultType="org.jeecg.modules.demo.materialcktzd.entity.HteKcMaterialCkTzd">
-SELECT id, site_id, material_id, supply_id, operate_date,
-sl_kg,dj,yfdj, zje,type as detail_type FROM `hte_kc_material_all`
-	</select>
+        SELECT id,
+               site_id,
+               material_id,
+               supply_id,
+               operate_date,
+               sl_kg,
+               dj,
+               yfdj,
+               zje,
+               type as detail_type
+        FROM `hte_kc_material_all`
+        order by operate_date
+    </select>
 
     <select id="getKcSum" resultType="java.util.Map">
         <foreach collection="list" item="item">
@@ -44,11 +66,9 @@ sl_kg,dj,yfdj, zje,type as detail_type FROM `hte_kc_material_all`
     <!--    </update>-->
 
     <update id="updateKcMaterial">
-        <foreach collection="list" item="item" index="index" separator=";">
-            update hte_kc_material_all
-            <set>kc_sl_kg = #{item.kcSlKg}</set>
-            where id=#{item.id}
-        </foreach>
+        update hte_kc_material_all
+        set kc_sl_kg = #{kcSlKg}
+        where id = #{id}
     </update>
 
 </mapper>

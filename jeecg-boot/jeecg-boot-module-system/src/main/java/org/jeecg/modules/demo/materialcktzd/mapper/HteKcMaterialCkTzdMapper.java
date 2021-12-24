@@ -32,5 +32,5 @@ public interface HteKcMaterialCkTzdMapper extends BaseMapper<HteKcMaterialCkTzd>
 
 //    void updateKcMaterial(HteKcMaterialCkTzd mod);
 
-    void updateKcMaterial(@Param("list") List<HteKcMaterialCkTzd> list);
+    void updateKcMaterial(HteKcMaterialCkTzd hteKcMaterialCkTzd);
 }

@@ -124,6 +124,7 @@ public class DataDealTest {
      **/
     @Test
     public void saveSludgeGrade() throws ParseException {
+
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
@@ -351,12 +352,9 @@ public class DataDealTest {
     public void updateMaterialAllKc() {
 
         List<HteKcMaterialCkTzd> list = hteKcMaterialCkTzdMapper.getKcMaterialAllForUpdate();
-        int size = list.size();
-        int index = 0;
-        int head = 0;
-        List<Map<String, String>> res = new ArrayList<>();
+
         Map<String, Double> kcmap = new HashMap<>();
-        for (HteKcMaterialCkTzd mod : list){
+        for (HteKcMaterialCkTzd mod : list) {
             String key = mod.getSiteId() + "_" + mod.getMaterialId();
             Double slKg = mod.getSlKg();
             Double origin = 0.00;
@@ -368,26 +366,15 @@ public class DataDealTest {
             kcmap.put(key, origin);
         }
 
-        while (index < size) {
-            long start = System.currentTimeMillis();
-            if (index % 1000 == 0 && index != 0) {
-                List<HteKcMaterialCkTzd> subList = list.subList(head, index);
-                System.out.println(" 记录汇总范围： " + head + "-------》 " + index);
-                hteKcMaterialCkTzdMapper.updateKcMaterial(subList);
-                head = index;
-            }
-            long end = System.currentTimeMillis();
-            System.out.println("-----------1000条批量update 用时：" + (end - start) / 1000 + "秒");
-            index++;
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("==>正在更新i=" + i);
+            hteKcMaterialCkTzdMapper.updateKcMaterial(list.get(i));
         }
-//        hteKcMaterialCkTzdMapper.updateKcMaterial(list);
 
     }
 
 
     /**
-     *
-     *
      * @Description: 中文物料名称转变为英文
      * @Param:
      * @return:
