@@ -14,4 +14,6 @@ public interface DataCollectInsertJobMapper {
     void insertMonthly(Map<String, String> map);
 
     void insertDataCollect(List<Map<String, String>> list);
+
+    void saveCollectPointData(List<Map<String, Object>> list);
 }

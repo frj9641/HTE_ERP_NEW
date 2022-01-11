@@ -18,4 +18,7 @@ public interface DataCollectSelectJobMapper {
     @MapKey(value = "")
     List<Map<String, Object>> selectAllDataCollect();
 
+    @MapKey(value = "")
+    List<Map<String, Object>> getCollectPointDataByDate(String from, String to, String collectPoint);
+
 }

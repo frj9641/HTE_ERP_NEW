@@ -25,6 +25,19 @@
           AND c.point_type_id = 2
           and b.collect_date between #{from} and #{to}
     </select>
+
+    <select id="getCollectPointDataByDate" resultType="java.util.Map">
+                SELECT d.depart_name, c.collect_point, e.test_index,a.is_ok,b.collect_date,b.collect_time
+        FROM hte_water_data_collect_detail a
+                 LEFT JOIN hte_water_data_collect b ON a.parent_id = b.id
+                 LEFT JOIN hte_collect_point c ON b.collect_point = c.id
+                 LEFT JOIN sys_depart d ON b.site_id = d.org_code
+								 left join hte_test_index e on e.id=a.test_index_id
+        WHERE c.collect_point LIKE CONCAT("%",#{collectPoint},"%")
+          AND a.is_ok IS NOT NULL
+          AND c.point_type_id = 2
+          and b.collect_date between #{from} and #{to}
+    </select>
     <select id="selectAllDataCollect" resultType="java.util.Map">
         SELECT a.id,
                b.collect_date,
