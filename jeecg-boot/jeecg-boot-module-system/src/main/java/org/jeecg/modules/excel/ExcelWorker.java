@@ -50,10 +50,18 @@ public class ExcelWorker {
             }
             list.add(map);
             // 数量达到指定或者遍历到最后一行则进行batch插入
-            if (list.size() == 2 || row.getRowNum() == xssfSheet.getLastRowNum()) {
+            if (list.size() == 10000 || row.getRowNum() == xssfSheet.getLastRowNum()) {
 //                commonMapper.insertRkQC(list);
 //                commonMapper.insertCkProduct(list);
-                commonMapper.insertExcel(list);
+//                commonMapper.insertExcelCkProductDataCollectMain(list);
+//                commonMapper.insertExcelCkProductDataCollectDetail(list);
+//                commonMapper.insertExcel(list);
+//                commonMapper.insertExcelRkDataCollectMain(list);
+
+//                commonMapper.insertExcelRkDataCollectDetail(list);
+//                commonMapper.insertExcelCk(list);
+//                commonMapper.insertExcelWaterDataMain(list);
+                commonMapper.insertExcelWaterDataDetail(list);
             list.clear();
             }
         }

@@ -116,6 +116,37 @@ public class DataSaveTest {
     }
 
     /**
+     * @Description: 镍、铬最后一级出水口质量数据筛选 保存
+     * @Param: [] 镍 铬
+     * @return: void
+     * @Author: lpf
+     * @Date: 2021/12/24 16:49
+    **/
+    @Test
+    public void saveCollectPortDetail() throws ParseException {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date beginDate = dateFormat1.parse("2018-08-01");
+        Date endDate = dateFormat1.parse("2021-11-01");
+        Date date = beginDate;
+        String collectPoint = "铬";
+        while (!date.equals(endDate)) {
+            String[] timeZone = ckProductDealJob.getTimeZone(date);
+            List<Map<String, Object>> list = dataCollectSelectJobMapper.getCollectPointDataByDate(timeZone[0], timeZone[1], collectPoint);
+            if (list.size() > 0) {
+                Map<String, String> map = matchLastCollectPoint(list);
+                List<Map<String, Object>>  subList = selectLastCollectPointData(list, map);
+                if (subList.size() > 0) {
+                    dataCollectInsertJobMapper.saveCollectPointData(subList);
+                }
+            }
+            c.setTime(date);
+            c.add(Calendar.MONTH, 1); // 月份加1天
+            date = c.getTime();
+        }
+    }
+
+    /**
      * 返回优先级最高的采样口
      *
      * @param list
@@ -158,7 +189,24 @@ public class DataSaveTest {
                     sum += Integer.parseInt(l.get("is_ok").toString());
                 }
             }
-            res.put(site, sum / count);
+//            res.put(site, sum / count);
+        }
+        return res;
+    }
+
+
+    public List<Map<String, Object>>  selectLastCollectPointData(List<Map<String, Object>> list, Map<String, String> map) {
+        List<Map<String, Object>>  res = new ArrayList<>();
+        for (Map.Entry<String, String> m : map.entrySet()) {
+            String site = m.getKey();
+            String port = m.getValue();
+            for (Map<String, Object> l : list) {
+                String collectPoint = l.get("collect_point").toString();
+                String departName = l.get("depart_name").toString();
+                if (departName.equals(site) && collectPoint.equals(port)) {
+                    res.add(l);
+                }
+            }
         }
         return res;
     }

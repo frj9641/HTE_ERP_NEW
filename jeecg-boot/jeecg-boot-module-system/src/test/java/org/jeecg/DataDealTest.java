@@ -52,7 +52,7 @@ public class DataDealTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             System.out.println("统计日期----->" + DateUtils.date2Str(date, dateFormat1));
@@ -94,7 +94,7 @@ public class DataDealTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             String[] timeZone = ckProductDealJob.getTimeZone(date);
@@ -128,7 +128,7 @@ public class DataDealTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             String[] timeZone = ckProductDealJob.getTimeZone(date);
@@ -189,7 +189,9 @@ public class DataDealTest {
                 System.out.println(output);
             }
             ckProductDealJobMapper.batchDeleteSludgeGradeDetail(timeZone[2]); // 删除
-            ckProductDealJobMapper.saveSludgeGradeDetail(sludgeGradeList2, timeZone[2]); //插入
+            if (sludgeGradeList2.size()>0){
+                ckProductDealJobMapper.saveSludgeGradeDetail(sludgeGradeList2, timeZone[2]); //插入
+            }
             // 保存月汇总数据
             ckProductDealJobMapper.batchDeleteSludgeGradeGeneral(timeZone[2]); // 删除
             ckProductDealJobMapper.saveSludgeGradeGeneral(timeZone[2]); //插入
@@ -214,7 +216,7 @@ public class DataDealTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-01-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             System.out.println("统计日期----->" + DateUtils.date2Str(date, dateFormat1));
@@ -319,7 +321,7 @@ public class DataDealTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2010-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             System.out.println("统计日期----->" + DateUtils.date2Str(date, dateFormat1));

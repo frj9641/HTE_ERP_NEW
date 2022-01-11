@@ -16,4 +16,13 @@
         </foreach>
     </insert>
 
+    <insert id="saveCollectPointData">
+        insert into success_rate_daily_detail_transpose(station, cj_rq, cj_time, test_index,test_value, collect_point)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.depart_name}, #{item.collect_date}, #{item.collect_time}, #{item.test_index}, #{item.is_ok},
+            #{item.collect_point})
+        </foreach>
+    </insert>
+
 </mapper>

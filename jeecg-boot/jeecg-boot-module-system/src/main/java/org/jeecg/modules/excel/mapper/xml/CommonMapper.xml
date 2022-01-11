@@ -26,28 +26,27 @@
         </foreach>
     </insert>-->
 
-    <!--    <insert id="insertExcel">-->
-    <!--        insert into hte_kc_material_ck_tzd-->
-    <!--        (id,djh,site_id, material_id, supply_id, sl_kg, operate_date, creater, remark, check_flag, create_time,-->
-    <!--        check_date, type)-->
-    <!--        values-->
-    <!--        <foreach item="item" index="index" collection="list" separator=",">-->
-    <!--            (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},-->
-    <!--            #{item.I},#{item.J},#{item.K},#{item.L})-->
-    <!--        </foreach>-->
-    <!--    </insert>-->
+        <insert id="insertExcelCk">
+            insert into hte_kc_material_ck_tzd
+            (id,djh,site_id, material_id, supply_id, sl_kg, operate_date, creater, remark, check_flag, create_time,
+            check_date, type)
+            values
+            <foreach item="item" index="index" collection="list" separator=",">
+                (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},
+                #{item.I},#{item.J},#{item.K},#{item.L})
+            </foreach>
+        </insert>
 
-    <!--    <insert id="insertExcel">-->
-    <!--        insert into hte_kc_material_rk_data_collect-->
-    <!--        (id,parent_id,site_id, material_id, supply_id, rk_date, hy_date, creater, create_time)-->
-    <!--        values-->
-    <!--        <foreach item="item" index="index" collection="list" separator=",">-->
-    <!--            (#{item.id},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},-->
-    <!--            #{item.I})-->
-    <!--        </foreach>-->
-    <!--    </insert>-->
+        <insert id="insertExcelRkDataCollectMain">
+            insert into hte_kc_material_rk_data_collect
+            (id,parent_id,site_id, material_id, supply_id, rk_date, hy_date, creater, create_time)
+            values
+            <foreach item="item" index="index" collection="list" separator=",">
+                (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H})
+            </foreach>
+        </insert>
 
-    <!--<insert id="insertExcel">
+ <insert id="insertExcelRkDataCollectDetail">
         insert into hte_kc_material_rk_data_collect_detail
         (id,parent_id,test_index_id, test_index,create_time)
         values
@@ -55,18 +54,18 @@
             (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D})
         </foreach>
     </insert>
--->
 
-<!--    <insert id="insertExcel">-->
-<!--        insert into hte_ck_product_data_collect-->
-<!--        (id,parent_id,site_id, product_id,collect_id,creater,tz_date, hy_date)-->
-<!--        values-->
-<!--        <foreach item="item" index="index" collection="list" separator=",">-->
-<!--            (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G})-->
-<!--        </foreach>-->
-<!--    </insert>-->
 
-    <insert id="insertExcel">
+    <insert id="insertExcelCkProductDataCollectMain">
+        insert into hte_ck_product_data_collect
+        (id,parent_id,site_id, product_id,collect_id,creater,tz_date, hy_date)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G})
+        </foreach>
+    </insert>
+
+    <insert id="insertExcelCkProductDataCollectDetail">
         insert into hte_ck_product_data_collect_detail
         (id,parent_id, test_index_id, test_value)
         values
@@ -75,23 +74,23 @@
         </foreach>
     </insert>
 
-<!--   <insert id="insertExcel">-->
-<!--        insert into hte_water_data_collect-->
-<!--        (id,site_id, collect_point, collect_date, collect_time)-->
-<!--        values-->
-<!--        <foreach item="item" index="index" collection="list" separator=",">-->
-<!--            (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D})-->
-<!--        </foreach>-->
-<!--    </insert>-->
+   <insert id="insertExcelWaterDataMain">
+        insert into hte_water_data_collect
+        (id,site_id, collect_point, collect_date, collect_time)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D})
+        </foreach>
+    </insert>
 
-<!--    <insert id="insertExcel">-->
-<!--        insert into hte_water_data_collect_detail-->
-<!--        (id,parent_id, test_index_id, test_value)-->
-<!--        values-->
-<!--        <foreach item="item" index="index" collection="list" separator=",">-->
-<!--            (#{item.id},#{item.A},#{item.B},#{item.C})-->
-<!--        </foreach>-->
-<!--    </insert>-->
+    <insert id="insertExcelWaterDataDetail">
+        insert into hte_water_data_collect_detail
+        (id,parent_id, test_index_id, test_value)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.A},#{item.B},#{item.C})
+        </foreach>
+    </insert>
 
     <insert id="insertPurchaseQC">
         insert into hte_kc_material_purchase(id,djh,site_id, material_id, supply_id, sl_t, dj, yfdj, zje, cg_date,
@@ -117,7 +116,7 @@
 
     <insert id="insertCkProduct">
         insert into hte_ck_product
-        (id,create_time, djh, site_id, product_id, collect_id, sl_t, tz_date, remark, check_flag, check_date,type, creater)
+        (id,create_time, djh, site_id, product_id, collect_id, sl_t, tz_date, remark, check_flag, check_date,ck_produce_type, creater)
         values
         <foreach item="item" index="index" collection="list" separator=",">
             (#{item.id},#{item.A},#{item.B},#{item.C},#{item.D},#{item.E},#{item.F},#{item.G},#{item.H},
