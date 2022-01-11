@@ -20,7 +20,7 @@
                  LEFT JOIN hte_water_data_collect b ON a.parent_id = b.id
                  LEFT JOIN hte_collect_point c ON b.collect_point = c.id
                  LEFT JOIN sys_depart d ON b.site_id = d.org_code
-        WHERE c.collect_point LIKE '%铬%'
+        WHERE c.collect_point LIKE '%镍%'
           AND a.is_ok IS NOT NULL
           AND c.point_type_id = 2
           and b.collect_date between #{from} and #{to}

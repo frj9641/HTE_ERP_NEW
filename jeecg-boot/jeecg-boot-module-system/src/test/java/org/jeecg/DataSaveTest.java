@@ -54,12 +54,16 @@ public class DataSaveTest {
         dataCollectInsertJobMapper.insertDataCollect(res);
     }
 
+    /**
+     * 需要质量数据采集明细达标字段赋值
+     * @throws ParseException
+     */
     @Test
     public void savePortDetailMonthly() throws ParseException {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             String[] timeZone = ckProductDealJob.getTimeZone(date);
@@ -91,7 +95,7 @@ public class DataSaveTest {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
         Date beginDate = dateFormat1.parse("2018-08-01");
-        Date endDate = dateFormat1.parse("2021-11-01");
+        Date endDate = dateFormat1.parse("2022-02-01");
         Date date = beginDate;
         while (!date.equals(endDate)) {
             String[] timeZone = ckProductDealJob.getTimeZone(date);
@@ -103,7 +107,7 @@ public class DataSaveTest {
                     Map<String, String> m = new HashMap<>();
                     m.put("departName", r.getKey());
                     m.put("time", timeZone[2]);
-                    m.put("type", "含铬水");
+                    m.put("type", "含镍水");
                     m.put("indicator", "达标率");
                     m.put("value", String.valueOf(r.getValue()));
                     dataCollectInsertJobMapper.insertMonthly(m);
