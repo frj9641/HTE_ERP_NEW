@@ -132,20 +132,20 @@ spring:
       datasource:
         master:
 #          url: jdbc:mysql://112.74.89.58:36370/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-          url: jdbc:mysql://172.16.2.21:3306/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+          url: jdbc:mysql://localhost:3306/jeecg-boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
           username: root
           password: 123456
           driver-class-name: com.mysql.cj.jdbc.Driver
           # 多数据源配置
-        multi-datasource1:
-          url: jdbc:mysql://172.16.2.21:3306/report_db_new?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-          username: root
-          password: 123456
-          driver-class-name: com.mysql.cj.jdbc.Driver
+#        multi-datasource1:
+#          url: jdbc:mysql://172.16.1.29:3306/report_db_new?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+#          username: root
+#          password: 123456
+#          driver-class-name: com.mysql.cj.jdbc.Driver
   #redis 配置
   redis:
     database: 0
-    host: 172.16.2.21
+    host: 172.16.1.29
     lettuce:
       pool:
         max-active: 8   #最大连接数据库连接数,设 -1 为没有限制

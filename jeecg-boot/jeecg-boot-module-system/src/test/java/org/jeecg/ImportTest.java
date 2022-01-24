@@ -1,6 +1,7 @@
 package org.jeecg;
 
 import org.jeecg.modules.excel.ExcelWorker;
+import org.jeecg.modules.excel.ExcelWorkerPlus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,14 @@ import java.io.InputStream;
 public class ImportTest {
     @Autowired
     ExcelWorker excelWorker;
+    @Autowired
+    ExcelWorkerPlus excelWorkerPlus;
+
+    @Test
+    public void testPlus() throws FileNotFoundException {
+        InputStream fileInputStream = new FileInputStream("D:\\hte_erp_new\\jeecg-boot\\jeecg-boot-module-system\\src\\main\\java\\org\\jeecg\\modules\\excel\\qcTemp.xlsx");
+        excelWorkerPlus.importExcel(fileInputStream, 0, "hte_kc_material_rk");
+    }
 
     @Test
     public void indexTest() {

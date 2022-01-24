@@ -12,12 +12,14 @@ public interface CommonMapper {
 
     /**
      * 采购期初值
+     *
      * @param list
      */
     void insertPurchaseQC(List<Map<String, String>> list);
 
     /**
      * 入库期初值
+     *
      * @param list
      */
     void insertRkQC(List<Map<String, String>> list);
@@ -28,7 +30,7 @@ public interface CommonMapper {
      * @return: void
      * @Author: lpf
      * @Date: 2021/12/1 15:20
-    **/
+     **/
     void insertCkProduct(List<Map<String, String>> list);
 
     /**
@@ -37,7 +39,7 @@ public interface CommonMapper {
      * @return: void
      * @Author: lpf
      * @Date: 2022/1/10 14:28
-    **/
+     **/
     void insertExcelCkProductDataCollectMain(List<Map<String, String>> list);
 
     /**
@@ -55,7 +57,7 @@ public interface CommonMapper {
      * @return: void
      * @Author: lpf
      * @Date: 2022/1/11 8:54
-    **/
+     **/
     void insertExcelRkDataCollectMain(List<Map<String, String>> list);
 
     /**
@@ -93,4 +95,13 @@ public interface CommonMapper {
      * @Date: 2022/1/11 8:54
      **/
     void insertExcelWaterDataDetail(List<Map<String, String>> list);
+
+    /**
+     * 增强通用导入方法
+     *
+     * @param list 导入数据
+     * @param title 字段名
+     * @param tableName 导入表名
+     */
+    void insertExcelPlus(List<List<String>> list, List<String> title, String tableName);
 }
